@@ -2,44 +2,33 @@
 import * as store from './store.js';
 import { sfx, unlockAudio } from './sound.js';
 import { el, svg, icons, activityIcons, iconButton, bigButton, holdButton, overlay, grownUpGate, toast } from './ui.js';
-import { renderRings, weekSummary } from './rings.js';
 
 const app = document.getElementById('app');
 
 export const ACTIVITIES = [
   {
     id: 'story', name: 'Trail Tales', color: '#d98436',
-    blurb: 'Read your way through an adventure',
     load: () => import('./activities/story.js'),
     status: s => {
       const n = Object.keys(s.story.finished).length;
-      return n ? `${n} of 4 trails done` : '4 trails to explore';
+      return n ? `${n} of 4 trails read` : '4 trails to read';
+    },
+  },
+  {
+    id: 'facts', name: 'Field Guide', color: '#7d55b5',
+    load: () => import('./activities/facts.js'),
+    status: s => {
+      const n = Object.keys(s.facts.learned).length;
+      return n ? `${n} facts found` : 'Questions and fun facts';
     },
   },
   {
     id: 'grove', name: 'Grove Grid', color: '#5f8f3e',
-    blurb: 'Today’s logic puzzle',
     load: () => import('./activities/grove.js'),
-    status: s => (s.grove.solved[store.todayKey()] ? 'Solved today ✓' : 'New puzzle today'),
-  },
-  {
-    id: 'magic', name: 'Pocket Magic', color: '#7d55b5',
-    blurb: 'Learn a trick, then put on a show',
-    load: () => import('./activities/magic.js'),
-    status: s => {
-      const n = Object.keys(s.magic.learned).length;
-      return n ? `${n} trick${n > 1 ? 's' : ''} learned` : '8 tricks to learn';
-    },
-  },
-  {
-    id: 'weather', name: 'Weather Desk', color: '#3a86c8',
-    blurb: 'Give today’s weather report',
-    load: () => import('./activities/weather.js'),
-    status: s => (s.weather.log.some(l => l.date === store.todayKey()) ? 'Report done today ✓' : 'Today’s report'),
+    status: s => (s.grove.solved[store.todayKey()] ? 'Solved today \u2713' : 'New puzzle today'),
   },
   {
     id: 'fishing', name: 'Fishing Hole', color: '#2a8a87',
-    blurb: 'Fish homes and a lure lab',
     load: () => import('./activities/fishing.js'),
     status: s => {
       const w = Object.keys(s.fishing.stocked).length;
@@ -48,15 +37,13 @@ export const ACTIVITIES = [
     },
   },
   {
-    id: 'build', name: 'Build Lab', color: '#cf4f45',
-    blurb: '3D blueprints for your tiles',
-    load: () => import('./activities/build.js'),
-    status: s => {
-      const n = Object.keys(s.build.done).length;
-      return n ? `${n} of 5 builds done` : '5 builds to try';
-    },
+    id: 'weather', name: 'Weather Desk', color: '#3a86c8',
+    load: () => import('./activities/weather.js'),
+    status: s => (s.weather.log.some(l => l.date === store.todayKey()) ? 'Report done today \u2713' : 'Today\u2019s report'),
   },
 ];
+// Pocket Magic (js/activities/magic.js) and Build Lab (js/activities/build.js) are parked for now.
+// They will come back as their own tools.
 
 export const COLORS = Object.fromEntries(ACTIVITIES.map(a => [a.id, a.color]));
 
@@ -85,19 +72,7 @@ function renderHome() {
   const s = store.get();
   app.innerHTML = '';
   if (store.limitReached()) { renderDoneForToday(); return; }
-  const sum = weekSummary(s.events, s.created);
   const name = s.settings.childName;
-
-  const ringBox = el('div', { class: 'ring-box' },
-    svg(renderRings(s.events, s.created, COLORS, { label: `Growth rings: ${sum.weeks} week${sum.weeks > 1 ? 's' : ''}` }), 'ring-svg'),
-    sum.weeks === 1 && sum.done === 0
-      ? el('div', { class: 'ring-caption' }, el('span', {}, 'Your first ring is growing. Pick something to do!'))
-      : el('div', { class: 'ring-caption' },
-        el('span', { class: 'ring-count' }, String(sum.done)),
-        el('span', {}, sum.done === 1 ? ' mark in this week’s ring' : ' marks in this week’s ring'),
-        sum.grown ? el('span', { class: 'ring-grown' }, svg(icons.leaf), ` ${sum.grown} with a grown-up`) : null),
-  );
-
   const tiles = el('div', { class: 'tiles' }, ACTIVITIES.map((a, i) =>
     el('button', {
       class: 'tile', style: { '--c': a.color, animationDelay: `${i * 50}ms` },
@@ -107,43 +82,36 @@ function renderHome() {
       el('span', { class: 'tile-name' }, a.name),
       el('span', { class: 'tile-status' }, a.status(s)),
     )));
-
   app.append(el('div', { class: 'home' },
     el('header', { class: 'topbar' },
       el('div', { class: 'brand' }, svg(icons.home, 'brand-mark'), el('span', {}, 'Growth Rings')),
       el('button', { class: 'grownup-link', onclick: () => grownUpGate(() => { location.hash = '#/grownup'; }) }, svg(icons.lock), 'Grown-ups'),
     ),
     el('main', { class: 'home-main' },
-      el('section', { class: 'home-ring' },
-        name ? el('h1', { class: 'ring-title' }, `${name}’s rings`) : el('h1', { class: 'ring-title' }, 'Your rings'),
-        ringBox),
-      el('section', { class: 'home-tiles' }, tiles),
-    ),
+      el('div', { class: 'home-hello' },
+        el('h1', {}, name ? `Hi, ${name}!` : 'Hi there!'),
+        el('p', { class: 'lead' }, 'What will you do today?')),
+      tiles),
   ));
 }
 
 /* ---------------- Done for today ---------------- */
 
 const OFFSCREEN = [
-  ['Draw something you saw today', '✏️'],
-  ['Build with your tiles or blocks', '🧱'],
-  ['Read a book on the couch', '📖'],
-  ['Go look for animal tracks outside', '🌿'],
-  ['Practice a magic trick for later', '🎩'],
-  ['Help a grown-up with a job', '🤝'],
+  ['Draw something you saw today', '\u270F\uFE0F'],
+  ['Build with your tiles or blocks', '\uD83E\uDDF1'],
+  ['Read a book on the couch', '\uD83D\uDCD6'],
+  ['Go look for animal tracks outside', '\uD83C\uDF3F'],
+  ['Help a grown-up with a job', '\uD83E\uDD1D'],
 ];
 
 function renderDoneForToday() {
-  const s = store.get();
   app.innerHTML = '';
   app.append(el('div', { class: 'doneday' },
-    el('div', { class: 'doneday-ring' }, svg(renderRings(s.events, s.created, COLORS, { maxR: 150, minFrac: 0.8 }), 'ring-svg')),
-    el('div', { class: 'doneday-text' },
-      el('h1', {}, 'Today’s ring is done!'),
-      el('p', { class: 'lead' }, 'Time for the real world. Pick one:'),
-      el('ul', { class: 'offscreen' }, OFFSCREEN.map(([t, e]) => el('li', {}, el('span', { class: 'emoji' }, e), t))),
-      el('button', { class: 'grownup-link subtle', onclick: () => grownUpGate(() => { store.allowOneMore(); toast('One more today'); renderHome(); }) }, svg(icons.lock), 'Grown-up: allow one more'),
-    ),
+    el('h1', {}, 'That\u2019s all for today!'),
+    el('p', { class: 'lead' }, 'Time for the real world. Pick one:'),
+    el('ul', { class: 'offscreen' }, OFFSCREEN.map(([t, e]) => el('li', {}, el('span', { class: 'emoji' }, e), t))),
+    el('button', { class: 'grownup-link subtle', onclick: () => grownUpGate(() => { store.allowOneMore(); toast('One more today'); renderHome(); }) }, svg(icons.lock), 'Grown-up: allow one more'),
   ));
 }
 
@@ -152,7 +120,7 @@ function renderDoneForToday() {
 async function openActivity(act) {
   app.innerHTML = '';
   const titleBar = el('header', { class: 'act-bar', style: { '--c': act.color } },
-    iconButton('back', 'Back to rings', () => { location.hash = '#/'; }),
+    iconButton('back', 'Back home', () => { location.hash = '#/'; }),
     el('div', { class: 'act-title' }, svg(activityIcons[act.id], 'act-icon'), el('span', {}, act.name)),
     el('div', { class: 'act-right' }),
   );
@@ -183,31 +151,20 @@ function showFinish(act, opts = {}, started) {
   const minutes = Math.max(1, Math.round((Date.now() - started) / 60000));
   store.logEvent(act.id, 'done', { m: minutes, note: opts.note || '' });
   sfx.finish();
-  setTimeout(() => sfx.ring(), 500);
-  const s = store.get();
   let ov;
   const grown = opts.grownPrompt ? el('div', { class: 'grown-box' },
     el('div', { class: 'grown-head' }, svg(icons.people, 'grown-icon'), el('span', {}, 'Grown-up moment')),
     el('p', { class: 'grown-prompt' }, opts.grownPrompt),
-    holdButton('Grown-up: hold to say we did it', () => {
-      store.logEvent(act.id, 'grown', { note: opts.note || '' });
-      sfx.spark();
-      ringWrap.innerHTML = renderRings(store.get().events, s.created, COLORS, { maxR: 150, highlight: true, minFrac: 0.85 });
-    }),
+    holdButton('Grown-up: hold to say we did it', () => { store.logEvent(act.id, 'grown', { note: opts.note || '' }); sfx.spark(); }),
   ) : null;
-  const ringWrap = el('div', { class: 'finish-ring' });
-  ringWrap.innerHTML = renderRings(s.events, s.created, COLORS, { maxR: 150, highlight: true, minFrac: 0.85 });
-
   const buttons = el('div', { class: 'row gap center' });
   if (opts.again !== false) buttons.append(el('button', { class: 'bigbtn ghost', onclick: () => { sfx.tap(); ov.close(); if (opts.onAgain) opts.onAgain(); else route(); } }, svg(icons.again), opts.againLabel || 'Again'));
-  buttons.append(el('button', { class: 'bigbtn', style: { background: act.color }, onclick: () => { sfx.tap(); ov.close(); location.hash = '#/'; if (location.hash === '#/') route(); } }, svg(icons.home), 'My rings'));
-
+  buttons.append(el('button', { class: 'bigbtn', style: { background: act.color }, onclick: () => { sfx.tap(); ov.close(); location.hash = '#/'; if (location.hash === '#/') route(); } }, 'Home'));
   ov = overlay(el('div', { class: 'finish' },
-    ringWrap,
+    el('div', { class: 'finish-badge', style: { background: act.color } }, svg(icons.check)),
     el('div', { class: 'finish-text' },
       el('h2', {}, opts.title || 'Nice work!'),
       opts.line ? el('p', { class: 'lead' }, opts.line) : null,
-      el('p', { class: 'finish-mark', style: { '--c': act.color } }, el('span', { class: 'dot' }), 'A new mark grew in your ring.'),
       grown,
       buttons,
     ),
@@ -298,7 +255,7 @@ function renderGrownUp() {
     let ov;
     ov = overlay(el('div', { class: 'gate' },
       el('h2', {}, 'Erase everything?'),
-      el('p', {}, 'This removes all rings, progress, and settings on this tablet. Download a backup first if you might want it later.'),
+      el('p', {}, 'This removes all progress and settings on this tablet. Download a backup first if you might want it later.'),
       el('div', { class: 'row gap' },
         el('button', { class: 'bigbtn ghost', onclick: () => ov.close() }, 'Keep it'),
         el('button', { class: 'bigbtn danger', onclick: () => { store.resetAll(); ov.close(); toast('Erased'); renderGrownUp(); } }, 'Erase'))));
@@ -306,7 +263,7 @@ function renderGrownUp() {
 
   app.append(el('div', { class: 'grownup' },
     el('header', { class: 'act-bar plain' },
-      iconButton('back', 'Back to rings', () => { location.hash = '#/'; }),
+      iconButton('back', 'Back home', () => { location.hash = '#/'; }),
       el('div', { class: 'act-title' }, el('span', {}, 'Grown-up area')),
       el('div', {}),
     ),

@@ -205,7 +205,8 @@ export function start(ctx) {
     } else {
       lines.push(`Outside it looks ${WORD[obs.sky] || obs.sky}, and it feels ${obs.feel}.`);
     }
-    const wear = [...obs.wear].map(k => WEAR.find(w => w.key === k).label.toLowerCase());
+    const wearKeys = fc ? WEAR.map(w => w.key).filter(k => recommend(fc).has(k)) : [...obs.wear];
+    const wear = wearKeys.map(k => WEAR.find(w => w.key === k).label.toLowerCase());
     if (wear.length) lines.push(`Don’t forget your ${wear.length > 1 ? wear.slice(0, -1).join(', ') + ' and ' + wear.slice(-1) : wear[0]}!`);
     if (fc) lines.push(`Tomorrow looks ${WORD[fc.tomorrow.key]}.`);
     lines.push('That’s the weather. Back to you!');

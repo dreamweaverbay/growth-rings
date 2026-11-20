@@ -1,25 +1,32 @@
 # Growth Rings
 
-A calm home base of activities for one curious kid. Each week becomes a ring in a tree cross-section, and every finished activity leaves a colored mark in that week's ring. A gold mark means a grown-up was part of it.
+A calm home base of activities for one curious kid. Five things to do, each one finished in a sitting, and each one ending with a small moment to share with a grown-up.
 
-Built as a plain static site: no accounts, no tracking, no subscriptions. Everything is saved on the device it's used on.
+Built as a plain static site: no accounts, no tracking, no subscriptions, no AI inside. Everything is saved on the device it's used on.
 
 ## Activities
 
 | Activity | What it is | Skills |
 | --- | --- | --- |
-| **Trail Tales** | Four short adventures he reads himself. Obstacles are solved with math and logic, and the numbers change every time and adjust to how he's doing. | Reading, addition and subtraction, logic |
+| **Trail Tales** | Four short adventures he reads himself. Obstacles are solved with math and logic. The numbers change every time and adjust to how he's doing, and each picture is drawn from those same numbers, so what he reads is what he sees. | Reading, addition and subtraction, comparing, logic |
+| **Field Guide** | Six-step rounds that mix questions, identifying tracks, leaves, and fish, putting the steps of a process in order, and sorting. Every step ends with a fact that goes into his collection, and every round ends with a question to stump a grown-up. | Science, reading, sequencing, classifying |
 | **Grove Grid** | A new picture logic puzzle every day (4 × 4), plus a 6 × 6 puzzle to solve with a grown-up. | Logic, persistence |
-| **Pocket Magic** | Eight real tricks using household items, with secret steps, practice, and a showtime stage with drumroll and applause. | Reading, fine motor, performing, some math |
+| **Fishing Hole** | Stock a pond, river, lake, or the ocean with the fish that really live there (17 species). In the Lure Lab, design a bait with real color patterns, name it, and test it in clear, stained, or muddy water. Saved baits get a printable bait card. | Reading, science, cause and effect |
 | **Weather Desk** | Look outside, compare with the real local forecast, choose what to wear, then deliver the report on air. | Observation, reading, numbers, presenting |
-| **Fishing Hole** | Stock a pond, river, lake, or the ocean with the fish that really live there (17 species, freshwater and saltwater). In the Lure Lab, design a bait with real color patterns, name it, and test it in clear, stained, or muddy water. Saved baits get a printable bait card. | Reading, science, cause and effect |
-| **Build Lab** | Spinnable 3D, step-by-step blueprints for magnetic tiles: rocket, gem, truck garage, castle, robot. | Spatial reasoning, following steps, building |
+
+### One rule for all content
+
+If the words name it, the picture shows it, in that amount. A story page that says "5 logs" draws five logs. When adding or changing content, check the picture against the sentence.
+
+### Parked
+
+Pocket Magic (`js/activities/magic.js`) and Build Lab (`js/activities/build.js`, with Three.js in `vendor/`) are still in the repo but are not on the home screen. Both lead to off-screen activities and are meant to become their own tools later.
 
 ## Grown-up area
 
 Tap **Grown-ups** on the home screen and answer the multiplication question. From there you can:
 
-- See which activities get picked, this week and last week
+- See which activities get picked, this week and last week, and how often a grown-up joined in
 - Set his name, a daily limit, and sound
 - Set the town for the weather forecast (uses [Open-Meteo](https://open-meteo.com), free, no key)
 - Download or restore a backup
@@ -34,22 +41,28 @@ Tap **Grown-ups** on the home screen and answer the multiplication question. Fro
 
 Open the site in Chrome, tap the ⋮ menu, and choose **Add to home screen** or **Install app**. It opens full-screen and works offline, except for the live weather forecast.
 
+After an update is pushed, close the app fully and open it again while online to pick up the new version.
+
 ## How it's organized
 
 ```
-index.html            app shell
-css/style.css         all styles
-js/app.js             home screen, ring, grown-up area, activity list
-js/rings.js           draws the tree rings
-js/store.js           saving to the device
-js/sound.js           sound effects (generated, no recordings, no voice)
-js/ui.js              shared buttons, overlays, helpers
-js/art.js             story scene art
-js/data/stories.js    Trail Tales text and math frames
-js/activities/*.js    one file per activity
-vendor/               Three.js (MIT) for Build Lab
-fonts/                Andika and Baloo 2 (SIL Open Font License)
-sw.js                 offline support
+index.html              app shell
+css/style.css           all styles
+js/app.js               home screen, finish screen, grown-up area, activity list
+js/store.js             saving to the device
+js/sound.js             sound effects (generated, no recordings, no voice)
+js/ui.js                shared buttons, overlays, helpers
+js/art.js               story scene art
+js/fishart.js           fish, lures, and water
+js/factart.js           life-cycle pictures, tracks, leaves
+js/data/stories.js      Trail Tales pages, numbers, and scenes
+js/data/facts.js        Field Guide questions, sequences, sorts, and identification sets
+js/data/fish.js         fish species, waters, baits, and colors
+js/activities/*.js      one file per activity
+fonts/                  Andika and Baloo 2 (SIL Open Font License)
+sw.js                   offline support
 ```
 
-To add an activity, add a file in `js/activities/` that exports `start(ctx)`, then add an entry to the `ACTIVITIES` list in `js/app.js`. Call `ctx.finish({...})` when the child completes it; that adds the ring mark and the grown-up moment.
+To add an activity, add a file in `js/activities/` that exports `start(ctx)`, then add an entry to the `ACTIVITIES` list in `js/app.js` and to the file list in `sw.js`. Call `ctx.finish({...})` when the child completes it; that shows the finish screen and the grown-up moment.
+
+To add Field Guide content, add entries to `js/data/facts.js`. For multiple-choice questions the first answer listed is the correct one; the app shuffles them.

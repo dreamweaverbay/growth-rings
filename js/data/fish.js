@@ -65,7 +65,7 @@ export const FISH = [
   },
   {
     id: 'muskie', name: 'Muskie', water: 'fresh', homes: ['lake', 'river'], zone: 'mid',
-    fact: 'A long hunter with sharp teeth. Anglers call it the fish of 10,000 casts.',
+    fact: 'A long, skinny hunter. Anglers call it the fish of 10,000 casts because it is so hard to catch.',
     need: 'big lakes and rivers',
     look: { depth: 0.25, back: '#56632e', side: '#a8ad6a', belly: '#ece8cf', fin: '#8a6a3a', pattern: ['vbars'], tail: 'fork', long: true, snout: true },
   },
@@ -122,7 +122,7 @@ export const BAITS = [
   { id: 'jig', name: 'Jig', depth: 'bottom', mimics: 'a crawfish', targets: ['largemouth', 'smallmouth', 'catfish'], tip: 'Hop it along the bottom like a crawfish.' },
   { id: 'popper', name: 'Topwater Popper', depth: 'top', mimics: 'a frog or bug on top', targets: ['largemouth', 'striper'], tip: 'Pop! It splashes on top of the water.' },
   { id: 'swimbait', name: 'Swimbait', depth: 'mid', mimics: 'a swimming baitfish', targets: ['striper', 'largemouth', 'walleye'], tip: 'Its paddle tail kicks like a real fish.' },
-  { id: 'spoon', name: 'Spoon', depth: 'mid', mimics: 'a hurt, shiny minnow', targets: ['striper', 'walleye', 'trout'], tip: 'It wobbles and flashes like a hurt minnow.' },
+  { id: 'spoon', name: 'Spoon', depth: 'mid', mimics: 'a hurt, shiny minnow', targets: ['striper', 'walleye', 'smallmouth'], tip: 'It wobbles and flashes like a hurt minnow.' },
 ];
 
 // natural = good in clear water; bright = good in stained or muddy water

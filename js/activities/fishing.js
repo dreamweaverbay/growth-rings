@@ -267,7 +267,7 @@ export function start(ctx) {
       panel.append(el('p', { class: 'll-q' }, 'Name your bait. Pick one word from each row.'), row('first', NAME_WORDS.first), row('second', NAME_WORDS.second), el('div', { class: 'row gap' }, dice),
         draft.first && draft.second ? next(3) : el('p', { class: 'muted' }, 'Pick a word from both rows to keep going.'));
     } else {
-      panel.append(el('p', { class: 'll-q' }, 'Where will you test it? Pick the water.'),
+      panel.append(el('p', { class: 'll-q' }, 'Time to test it at the Big Lake. How does the water look today?'),
         el('div', { class: 'll-clarity' }, CLARITY.map(c => el('button', { class: 'll-clear', onclick: () => { sfx.pick(); cast(c); } },
           el('span', { class: 'chip big', style: { background: c.water } }), el('span', { class: 'll-clear-name' }, c.name), el('span', { class: 'muted small' }, c.blurb)))));
     }
@@ -287,7 +287,7 @@ export function start(ctx) {
     const scene = el('div', { class: 'cast-scene' }, svg(waterSVG('lake', { haze: clarity.haze, hazeColor: clarity.id === 'muddy' ? '#8a6436' : '#4f7a4a' }), 'fh-scene-bg'), line, fish, lure, shout);
     const result = el('div', { class: 'cast-result' });
     body.append(
-      el('div', { class: 'fh-top' }, el('button', { class: 'smallbtn', onclick: () => { sfx.tap(); lureLab(3); } }, '← Lure Lab'), el('h2', {}, `${draftName()} in ${clarity.name.toLowerCase()} water`)),
+      el('div', { class: 'fh-top' }, el('button', { class: 'smallbtn', onclick: () => { sfx.tap(); lureLab(3); } }, '← Lure Lab'), el('h2', {}, `${draftName()} at the Big Lake, in ${clarity.name.toLowerCase()} water`)),
       scene, result);
 
     lure.style.left = '4%'; lure.style.top = '4%';

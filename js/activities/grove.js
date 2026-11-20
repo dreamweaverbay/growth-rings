@@ -194,7 +194,7 @@ export function start(ctx) {
       board.classList.add('solved');
       if (practice) {
         sfx.good();
-        msg.textContent = 'Solved! Practice puzzles don’t add to your ring, but they make you sharper.';
+        msg.textContent = 'Solved! Practice makes you sharper.';
         body.querySelector('.grove-side').append(el('div', { class: 'row gap center' },
           el('button', { class: 'bigbtn', onclick: () => play('sprout', true) }, 'Another'),
           el('button', { class: 'bigbtn ghost', onclick: showMenu }, 'Done')));
