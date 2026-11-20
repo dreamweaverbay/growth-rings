@@ -18,6 +18,7 @@ const DEFAULTS = () => ({
   magic: { learned: {}, performed: {} },
   weather: { log: [], cache: null },
   build: { done: {} },
+  fishing: { stocked: {}, box: [] },
 });
 
 let state = load();

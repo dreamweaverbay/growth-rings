@@ -12,6 +12,7 @@ Built as a plain static site: no accounts, no tracking, no subscriptions. Everyt
 | **Grove Grid** | A new picture logic puzzle every day (4 × 4), plus a 6 × 6 puzzle to solve with a grown-up. | Logic, persistence |
 | **Pocket Magic** | Eight real tricks using household items, with secret steps, practice, and a showtime stage with drumroll and applause. | Reading, fine motor, performing, some math |
 | **Weather Desk** | Look outside, compare with the real local forecast, choose what to wear, then deliver the report on air. | Observation, reading, numbers, presenting |
+| **Fishing Hole** | Stock a pond, river, lake, or the ocean with the fish that really live there (17 species, freshwater and saltwater). In the Lure Lab, design a bait with real color patterns, name it, and test it in clear, stained, or muddy water. Saved baits get a printable bait card. | Reading, science, cause and effect |
 | **Build Lab** | Spinnable 3D, step-by-step blueprints for magnetic tiles: rocket, gem, truck garage, castle, robot. | Spatial reasoning, following steps, building |
 
 ## Grown-up area

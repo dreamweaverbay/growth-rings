@@ -38,6 +38,16 @@ export const ACTIVITIES = [
     status: s => (s.weather.log.some(l => l.date === store.todayKey()) ? 'Report done today ✓' : 'Today’s report'),
   },
   {
+    id: 'fishing', name: 'Fishing Hole', color: '#2a8a87',
+    blurb: 'Fish homes and a lure lab',
+    load: () => import('./activities/fishing.js'),
+    status: s => {
+      const w = Object.keys(s.fishing.stocked).length;
+      const b = s.fishing.box.length;
+      return w || b ? `${w} of 4 waters \u00B7 ${b} bait${b === 1 ? '' : 's'}` : 'Fish homes and lures';
+    },
+  },
+  {
     id: 'build', name: 'Build Lab', color: '#cf4f45',
     blurb: '3D blueprints for your tiles',
     load: () => import('./activities/build.js'),
