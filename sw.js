@@ -1,5 +1,5 @@
 // Offline support: keep the app's own files on the tablet. The weather forecast always uses the network.
-const VERSION = 'gr-v3';
+const VERSION = 'gr-v4';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/store.js', 'js/sound.js', 'js/ui.js', 'js/art.js', 'js/fishart.js', 'js/factart.js',
@@ -8,6 +8,7 @@ const FILES = [
   'fonts/andika-latin-400-normal.woff2', 'fonts/andika-latin-700-normal.woff2',
   'fonts/baloo-2-latin-500-normal.woff2', 'fonts/baloo-2-latin-700-normal.woff2', 'fonts/baloo-2-latin-800-normal.woff2',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png',
+  ...['ant', 'bat', 'beaver', 'bee', 'butterfly', 'cow', 'crab', 'deer', 'dog', 'dolphin', 'duck', 'fox', 'frog', 'goat', 'hen', 'horse', 'jellyfish', 'ladybug', 'mouse', 'octopus', 'owl', 'pie', 'pig', 'rabbit', 'raccoon', 'shark', 'snail', 'spider', 'squirrel', 'turtle', 'whale'].map(n => `art/noto/${n}.svg`),
 ];
 
 self.addEventListener('install', (e) => {

@@ -21,7 +21,7 @@ function row(name, count, { x, y, step = 30, perRow = 5, dy = 22, sc = 1, flip =
 
 /* ================= Beaver Bridge ================= */
 
-function bridge(v, { filled = v.filled, left = [], right = [], on = [], tappable = false } = {}) {
+function bridge(v, { filled = v.filled, left = [], right = [], on = [], friends = [], tappable = false } = {}) {
   const T = v.total, x0 = 100, x1 = 300, w = (x1 - x0) / T;
   let o = `<rect width="400" height="220" fill="#cfe9f3"/>
     <path d="M0 118 Q100 92 200 110 Q300 128 400 98 V220 H0Z" fill="#b4d695"/>
@@ -36,12 +36,14 @@ function bridge(v, { filled = v.filled, left = [], right = [], on = [], tappable
     else o += `<rect class="${tappable ? 'slot' : ''}" data-i="${i}" x="${x}" y="141" width="${w - 2}" height="19" rx="5" fill="#ffffff" fill-opacity=".45" stroke="#6b4426" stroke-width="1.5" stroke-dasharray="4 3"/>`;
   }
   left.forEach(([n, x, sc, flip]) => { o += prop(n, x, 150, sc, flip); });
+  friends.forEach(([n, x, y, sc]) => { o += prop(n, x, y, sc, true); });
   right.forEach(([n, x, sc, flip]) => { o += prop(n, x, 150, sc, flip); });
   on.forEach(([n, x, sc, flip]) => { o += prop(n, x, 141, sc, flip); });
   return wrap(o);
 }
 
-const FRIENDS_LEFT = [['mole', 14, 0.6, true], ['fox', 44, 0.6, true], ['goat', 78, 0.6, true]];
+// Friends waiting on the left bank: [prop, x, y, scale]
+const FRIENDS_LEFT = [['goat', 60, 153, 0.8], ['raccoon', 30, 178, 0.85], ['rabbit', 72, 204, 0.85]];
 
 const beaverBridge = {
   id: 'bridge',
@@ -110,17 +112,17 @@ const beaverBridge = {
     cross: {
       type: 'pick',
       setup(v, lvl) {
-        v.w = { mole: 1, fox: randInt(8, 14), goat: randInt(LV(lvl, [20, 30, 40, 50, 60]), LV(lvl, [30, 50, 70, 90, 99])) };
+        v.w = { rabbit: randInt(2, 4), raccoon: randInt(9, 15), goat: randInt(LV(lvl, [20, 30, 40, 50, 60]), LV(lvl, [30, 50, 70, 90, 99])) };
         v.ask = Math.random() < 0.5 ? 'lightest' : 'heaviest';
       },
-      scene: v => bridge(v, { filled: v.total, left: FRIENDS_LEFT, right: [['beaver', 352, 1]] }),
-      text: v => `Three friends want to cross. Mo weighs ${v.w.mole} pound. Pip weighs ${v.w.fox} pounds. Gus weighs ${v.w.goat} pounds. ${v.ask === 'lightest' ? 'Bev wants the lightest friend to go first. Who is the lightest?' : 'Bev wants the heaviest friend to test the bridge. Who is the heaviest?'}`,
-      options: v => [['mole', 'Mo'], ['fox', 'Pip'], ['goat', 'Gus']].map(([p, n]) => ({ key: p, icon: propIcon(p), label: `${n}: ${v.w[p]}` })),
-      correct: v => (v.ask === 'lightest' ? 'mole' : 'goat'),
+      scene: v => bridge(v, { filled: v.total, friends: FRIENDS_LEFT, right: [['beaver', 352, 1]] }),
+      text: v => `Three friends want to cross. Dot the rabbit weighs ${v.w.rabbit} pounds. Pip the raccoon weighs ${v.w.raccoon} pounds. Gus the goat weighs ${v.w.goat} pounds. ${v.ask === 'lightest' ? 'Bev wants the lightest friend to go first. Who is the lightest?' : 'Bev wants the heaviest friend to test the bridge. Who is the heaviest?'}`,
+      options: v => [['rabbit', 'Dot'], ['raccoon', 'Pip'], ['goat', 'Gus']].map(([p, n]) => ({ key: p, icon: propIcon(p), label: `${n}: ${v.w[p]}` })),
+      correct: v => (v.ask === 'lightest' ? 'rabbit' : 'goat'),
       next: 'end',
     },
     end: {
-      scene: v => bridge(v, { filled: v.total, on: [['mole', 150, 0.7, true], ['fox', 200, 0.7, true], ['goat', 252, 0.7, true]], right: [['beaver', 352, 1]] }),
+      scene: v => bridge(v, { filled: v.total, on: [['rabbit', 146, 0.7, true], ['raccoon', 198, 0.7, true], ['goat', 256, 0.7, true]], right: [['beaver', 352, 1]] }),
       text: () => 'The bridge holds! One by one, the friends cross the creek. Bev slaps her tail. Good job!',
       end: true,
     },
@@ -141,13 +143,13 @@ const HIDE_XY = [[58, 200], [200, 212], [338, 200]];
 function owlScene(v, found) {
   let inner = prop('oak', 200, 182, 1.8) + prop('owl', 236, 92, 0.9);
   v.places.forEach((pl, i) => { inner += prop(pl.p, HIDE_XY[i][0], HIDE_XY[i][1], 0.9); });
-  inner += prop('fox', 128, 214, 0.75);
+  inner += prop('raccoon', 128, 214, 0.9);
   if (found) { const i = v.places.indexOf(v.spot); inner += prop('lantern', HIDE_XY[i][0] + (i === 2 ? -44 : 40), HIDE_XY[i][1] + 2, 1.2); }
   return scene({ bg: 'night', props: [['moon', 340, 62, 1.1]] }, inner);
 }
 
 function lanternScene(v, inside) {
-  let inner = prop('fox', 84, 210, 0.9) + prop('lantern', 200, 208, 3, false, inside >= v.flies);
+  let inner = prop('raccoon', 84, 210, 1.1) + prop('lantern', 200, 208, 3, false, inside >= v.flies);
   for (let i = 0; i < inside; i++) {
     const x = 186 + (i % 3) * 14, y = 138 + Math.floor(i / 3) * 14;
     inner += `<circle cx="${x}" cy="${y}" r="6" fill="#fff3a8" opacity=".5"/><circle cx="${x}" cy="${y}" r="3.4" fill="#ffe27a"/>`;
@@ -163,16 +165,16 @@ const lostLantern = {
   id: 'lantern',
   title: 'The Lost Lantern',
   grown: 'Tell a grown-up which way you went and where the lantern was hiding.',
-  cover: () => scene({ bg: 'dusk', props: [['pine', 60, 172, 1.1], ['pine', 340, 170, 1.2], ['lantern', 200, 190, 1.8], ['fox', 276, 196, 1.2]] }),
+  cover: () => scene({ bg: 'dusk', props: [['pine', 60, 172, 1.1], ['pine', 340, 170, 1.2], ['lantern', 200, 190, 1.8], ['raccoon', 280, 196, 1.5]] }),
   init() {},
   pages: {
     start: {
-      scene: () => scene({ bg: 'dusk', props: [['sun', 330, 138, 1.6], ['barn', 90, 176, 1.1], ['fox', 250, 196, 1.4]] }),
-      text: () => 'The sun is going down by the barn. Pip the fox runs up to you.',
+      scene: () => scene({ bg: 'dusk', props: [['sun', 330, 138, 1.6], ['barn', 90, 176, 1.1], ['raccoon', 250, 196, 1.6]] }),
+      text: () => 'The sun is going down by the barn. Pip the raccoon runs up to you.',
       next: 'ask',
     },
     ask: {
-      scene: () => scene({ bg: 'dusk', props: [['pine', 50, 170, 1.2], ['pine', 120, 165, 0.9], ['pine', 350, 168, 1.1], ['fox', 230, 198, 1.6, true]] }),
+      scene: () => scene({ bg: 'dusk', props: [['pine', 50, 170, 1.2], ['pine', 120, 165, 0.9], ['pine', 350, 168, 1.1], ['raccoon', 230, 200, 1.9, true]] }),
       text: () => '“I lost my lantern in the woods,” says Pip. “Can you help me find it?”',
       button: 'Yes! Let’s go.',
       next: 'fork',
@@ -181,11 +183,11 @@ const lostLantern = {
       type: 'choices',
       scene: () => scene({ bg: 'dusk' },
         `<path d="M184 220 L216 220 L212 190 Q260 172 336 156 L326 148 Q256 162 200 176 Q144 162 74 148 L64 156 Q140 172 188 190 Z" fill="#d9bf8f"/>
-         <ellipse cx="52" cy="150" rx="50" ry="9" fill="#5d8fb0"/>${prop('log', 40, 146, 0.8)}${prop('frog', 44, 136, 0.7)}
-         ${prop('rock', 318, 146, 0.8)}${prop('rock', 356, 152, 1)}${prop('rock', 340, 132, 0.6)}${prop('fox', 200, 214, 0.8)}`),
+         <ellipse cx="52" cy="150" rx="50" ry="9" fill="#5d8fb0"/>${prop('log', 40, 146, 0.8)}${prop('turtle', 40, 136, 0.7)}
+         ${prop('rock', 318, 146, 0.8)}${prop('rock', 356, 152, 1)}${prop('rock', 340, 132, 0.6)}${prop('raccoon', 200, 214, 1)}`),
       text: () => 'The path splits in two. One way goes down to the creek. One way goes up the rocky hill. Which way will you look first?',
       choices: [
-        { label: 'Down to the creek', icon: 'frog', to: 'creek' },
+        { label: 'Down to the creek', icon: 'turtle', to: 'creek' },
         { label: 'Up the rocky hill', icon: 'rock', to: 'hill' },
       ],
     },
@@ -193,10 +195,10 @@ const lostLantern = {
       type: 'math',
       setup(v, lvl) { const S = LV(lvl, [5, 7, 9, 10, 11]); v.a = randInt(1, Math.min(6, S - 1)); v.b = randInt(1, Math.min(5, S - v.a)); },
       scene: v => scene({ bg: 'dusk', creek: true, props: [['bush', 30, 166, 0.9]] },
-        prop('log', 150, 178, 2.2) + row('frog', v.a, { x: 98, y: 148, step: 20, perRow: 6, sc: 0.75 })
-        + Array.from({ length: v.b }, (_, i) => `<ellipse cx="${240 + i * 30}" cy="187" rx="13" ry="5" fill="#4f9a3e"/>${prop('frog', 240 + i * 30, 186, 0.75)}`).join('')
-        + prop('fox', 60, 216, 0.85)),
-      text: v => `No lantern by the creek. But ${s(v.a, 'frog sits', 'frogs sit')} on the log and ${s(v.b, 'frog sits', 'frogs sit')} on ${v.b === 1 ? 'a lily pad' : 'lily pads'}. Pip wants to ask them all. How many frogs is that?`,
+        prop('log', 150, 178, 2.2) + row('turtle', v.a, { x: 98, y: 148, step: 20, perRow: 6, sc: 0.6 })
+        + Array.from({ length: v.b }, (_, i) => `${prop('turtle', 246 + i * 30, 191, 0.7)}<path d="M${233 + i * 30} 192 h26" stroke="#fff" stroke-width="2" opacity=".75" stroke-linecap="round"/>`).join('')
+        + prop('raccoon', 52, 216, 1.1)),
+      text: v => `No lantern by the creek. But ${s(v.a, 'turtle sits', 'turtles sit')} on the log and ${s(v.b, 'turtle swims', 'turtles swim')} in the water. Pip wants to ask them all. How many turtles is that?`,
       answer: v => v.a + v.b,
       frames: v => ({ type: 'join', a: v.a, b: v.b }),
       next: 'dark',
@@ -207,7 +209,7 @@ const lostLantern = {
       scene: v => scene({ bg: 'dusk', props: [['pine', 372, 150, 0.7]] },
         row('rock', v.a, { x: 118, y: 172, step: 52, perRow: 5, dy: 32, sc: 0.7,
           mark: (x, y, i) => (i < v.b ? `<circle cx="${x}" cy="${y - 30}" r="9" fill="#4f9a45"/><path d="M${x - 4} ${y - 30} l3 4 l6 -8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>` : '') })
-        + prop('fox', 52, 208, 0.9)),
+        + prop('raccoon', 50, 208, 1.1)),
       text: v => `The lantern may be behind a rock! There are ${v.a} rocks on the hill. You and Pip look behind ${v.b} of them. No lantern. How many rocks are left to check?`,
       answer: v => v.a - v.b,
       frames: v => ({ type: 'leave', a: v.a, b: v.b }),
@@ -216,7 +218,7 @@ const lostLantern = {
     dark: {
       type: 'count',
       setup(v, lvl) { v.flies = randInt(LV(lvl, [3, 4, 5, 6, 7]), LV(lvl, [5, 7, 9, 10, 11])); },
-      scene: () => ({ bg: 'night', props: [['moon', 340, 62, 1.1], ['pine', 40, 178, 1.3], ['oak', 200, 184, 1.5], ['pine', 372, 180, 1.1], ['fox', 110, 208, 0.9]] }),
+      scene: () => ({ bg: 'night', props: [['moon', 340, 62, 1.1], ['pine', 40, 178, 1.3], ['oak', 200, 184, 1.5], ['pine', 372, 180, 1.1], ['raccoon', 110, 208, 1.1]] }),
       text: () => 'Now it is too dark to see. Fireflies can help! Tap each firefly to light it up.',
       doneText: v => `${v.flies} fireflies light the way to a big oak tree.`,
       next: 'owl',
@@ -245,7 +247,7 @@ const lostLantern = {
       next: 'end',
     },
     end: {
-      scene: () => scene({ bg: 'night', props: [['moon', 330, 60, 1.2], ['pine', 50, 176, 1.1], ['lantern', 170, 200, 2.2, false, true], ['fox', 256, 206, 1.3, true]] }),
+      scene: () => scene({ bg: 'night', props: [['moon', 330, 60, 1.2], ['pine', 50, 176, 1.1], ['lantern', 170, 200, 2.2, false, true], ['raccoon', 262, 206, 1.6, true]] }),
       text: () => 'The lantern glows! “Thank you,” says Pip. You walk home under the stars.',
       end: true,
     },
@@ -287,7 +289,7 @@ function fallScene() {
 function nestScene(v, have) {
   let o = prop('nest', 296, 206, 2.6) + prop('owl', 372, 200, 0.9);
   for (let i = 0; i < v.c; i++) {
-    const x = 24 + (i % 4) * 54, y = 146 + Math.floor(i / 4) * 20;
+    const x = 24 + (i % 4) * 54, y = 168 + Math.floor(i / 4) * 16;
     o += i < have
       ? `<rect x="${x}" y="${y}" width="46" height="10" rx="5" fill="#7a4e2c"/>`
       : `<rect x="${x}" y="${y}" width="46" height="10" rx="5" fill="#fff" fill-opacity=".5" stroke="#7a4e2c" stroke-width="1.5" stroke-dasharray="4 3"/>`;
@@ -341,7 +343,7 @@ const oldestOak = {
       type: 'math',
       setup(v, lvl) { v.home = 'barn'; const S = LV(lvl, [5, 7, 9, 10, 12]); v.a = randInt(1, Math.min(7, S - 1)); v.b = randInt(1, Math.min(6, S - v.a)); },
       scene: v => barnInside(v),
-      text: v => `Hoot peeks in the barn window. The barn is full of hens! ${s(v.a, 'hen sleeps', 'hens sleep')} on the low beam. ${s(v.b, 'hen sleeps', 'hens sleep')} on the high beam. How many hens are in the barn?`,
+      text: v => `Hoot peeks in the barn window. The barn is full of hens! ${s(v.a, 'hen sits', 'hens sit')} on the low beam. ${s(v.b, 'hen sits', 'hens sit')} on the high beam. How many hens are in the barn?`,
       answer: v => v.a + v.b,
       frames: v => ({ type: 'join', a: v.a, b: v.b }),
       next: 'season',
@@ -378,17 +380,34 @@ const oldestOak = {
 /* ================= Who Took the Pie? ================= */
 
 export const SUSPECTS = [
-  { id: 'fox', name: 'Pip', prop: 'fox', clue: 'The pie taker has no bushy tail.' },
+  { id: 'raccoon', name: 'Pip', prop: 'raccoon', clue: 'The pie taker has no striped tail.' },
   { id: 'hen', name: 'Hen', prop: 'hen', clue: 'The pie taker has no feathers.' },
   { id: 'goat', name: 'Gus', prop: 'goat', clue: 'The pie taker has no horns.' },
-  { id: 'mole', name: 'Mo', prop: 'mole', clue: 'The pie taker has no pink nose.' },
+  { id: 'mouse', name: 'Mo', prop: 'mouse', clue: 'The pie taker has no long pink tail.' },
 ];
 
-const FOUR = prop('fox', 58, 206, 0.95) + prop('hen', 140, 208, 1.05) + prop('goat', 268, 208, 0.95, true) + prop('mole', 346, 208, 1.1, true);
+const FOUR = prop('raccoon', 52, 210, 1.15) + prop('hen', 132, 212, 1.05) + prop('goat', 272, 212, 0.95, true) + prop('mouse', 334, 213, 1.4, true);
+
+// The side of the house, seen from the yard. The window is in the wall and the pie sits on its sill.
+function houseWall(onSill, inner = '') {
+  let o = `<rect width="400" height="220" fill="#f3e6cf"/>`;
+  for (let y = 28; y < 186; y += 16) o += `<line x1="0" y1="${y}" x2="400" y2="${y}" stroke="#e2d0ad" stroke-width="2"/>`;
+  o += `<rect width="400" height="14" fill="#7a4e2c"/><rect y="14" width="400" height="5" fill="#5b3a22" opacity=".35"/>
+    <rect x="132" y="34" width="136" height="100" fill="#7a4e2c"/>
+    <rect x="140" y="42" width="120" height="86" fill="#8fc7e0"/>
+    <path d="M140 42 h34 q-4 40 -34 52 Z M260 42 h-34 q4 40 34 52 Z" fill="#fff8ea" opacity=".9"/>
+    <path d="M200 42 V128" stroke="#7a4e2c" stroke-width="4"/>
+    <rect x="122" y="128" width="156" height="10" rx="2" fill="#9a6a40"/><rect x="128" y="138" width="144" height="4" fill="#5b3a22" opacity=".3"/>
+    <rect y="184" width="400" height="36" fill="#93c06d"/><path d="M0 204 Q120 198 220 204 Q320 210 400 202 V220 H0 Z" fill="#82b05e"/>`;
+  o += prop('bush', 30, 192, 1.1) + prop('bush', 374, 192, 1.1);
+  if (onSill === 'pie') o += prop('pie', 200, 130, 1.25);
+  if (onSill === 'crumbs') o += prop('crumbs', 196, 129, 1.8);
+  return wrap(o + inner);
+}
 
 function pieTop(v, culprit) {
   const cx = 190, cy = 110, r = 70;
-  let o = `<rect width="400" height="220" fill="#e6d5b3"/><circle cx="${cx}" cy="${cy}" r="${r + 10}" fill="#fbf7ee" stroke="#cdbb97" stroke-width="3"/>`;
+  let o = `<rect width="400" height="220" fill="#c99a62"/>${[44, 88, 132, 176].map(y => `<line x1="0" y1="${y}" x2="400" y2="${y}" stroke="#b0824e" stroke-width="2"/>`).join('')}<circle cx="${cx}" cy="${cy}" r="${r + 10}" fill="#fbf7ee" stroke="#cdbb97" stroke-width="3"/>`;
   for (let i = 0; i < v.c; i++) {
     const a0 = (i / v.c) * Math.PI * 2 - Math.PI / 2, a1 = ((i + 1) / v.c) * Math.PI * 2 - Math.PI / 2;
     const p = (a, rr) => `${(cx + Math.cos(a) * rr).toFixed(1)} ${(cy + Math.sin(a) * rr).toFixed(1)}`;
@@ -400,29 +419,29 @@ function pieTop(v, culprit) {
       o += `<circle cx="${cx + Math.cos(am) * 40}" cy="${cy + Math.sin(am) * 40}" r="2.5" fill="#c9853f"/><circle cx="${cx + Math.cos(am + 0.2) * 52}" cy="${cy + Math.sin(am + 0.2) * 52}" r="1.8" fill="#c9853f"/>`;
     }
   }
-  return wrap(o + prop(culprit, 340, 200, 1.2, true));
+  return wrap(o + prop(culprit, 338, 204, culprit === 'mouse' ? 2.2 : 1.5, true));
 }
 
 const pie = {
   id: 'pie',
   title: 'Who Took the Pie?',
   grown: 'Make up a riddle about an animal and ask a grown-up to guess the answer.',
-  cover: () => scene({ bg: 'day', props: [['window', 200, 164, 2.2], ['pie', 200, 156, 1.6]] }),
+  cover: () => houseWall('pie'),
   init() {},
   pages: {
     start: {
-      scene: () => scene({ bg: 'day', props: [['window', 200, 164, 2.2], ['pie', 200, 156, 1.6], ['cloud', 60, 44, 1]] }),
-      text: () => 'A fresh pie sits by the window to cool.',
+      scene: () => houseWall('pie'),
+      text: () => 'A fresh pie sits in the window to cool.',
       next: 'gone',
     },
     gone: {
-      scene: () => scene({ bg: 'day', props: [['window', 200, 164, 2.2], ['crumbs', 196, 158, 1.8], ['cloud', 330, 44, 1]] }),
+      scene: () => houseWall('crumbs'),
       text: () => 'Later, the pie is gone! Only crumbs are left. Who took it?',
       next: 'suspects',
     },
     suspects: {
-      scene: () => scene({ bg: 'day', props: [['window', 200, 140, 1.5], ['crumbs', 198, 136, 1.2]] }, FOUR),
-      text: () => 'Four friends were near the window: Pip the fox, Hen, Gus the goat, and Mo the mole. Read the clues to find the pie taker.',
+      scene: () => houseWall('crumbs', FOUR),
+      text: () => 'Four friends were near the window: Pip the raccoon, Hen, Gus the goat, and Mo the mouse. Read the clues to find the pie taker.',
       button: 'Find the clues',
       next: 'mystery',
     },
@@ -437,8 +456,8 @@ const pie = {
       next: 'end',
     },
     end: {
-      scene: () => scene({ bg: 'day', props: [['window', 200, 140, 1.5], ['pie', 200, 135, 1.2]] }, FOUR),
-      text: v => `${v.culprit} says sorry and helps bake a new pie. Now a new pie sits by the window, and every friend gets a slice!`,
+      scene: () => houseWall('pie', FOUR),
+      text: v => `${v.culprit} says sorry and helps bake a new pie. Now a new pie sits in the window, and every friend gets a slice!`,
       end: true,
     },
   },

@@ -25,7 +25,7 @@ export const ACTIVITIES = [
   {
     id: 'grove', name: 'Grove Grid', color: '#5f8f3e',
     load: () => import('./activities/grove.js'),
-    status: s => (s.grove.solved[store.todayKey()] ? 'Solved today \u2713' : 'New puzzle today'),
+    status: s => { const t = store.todayKey(); const n = [t, t + ':next', t + ':piece', t + ':path'].filter(k => s.grove.solved[k]).length; return n === 4 ? 'All 4 solved today \u2713' : n ? `${n} of 4 solved today` : '4 new puzzles today'; },
   },
   {
     id: 'fishing', name: 'Fishing Hole', color: '#2a8a87',

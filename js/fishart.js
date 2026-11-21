@@ -1,5 +1,6 @@
 // Fish, lure, and water drawings for Fishing Hole. All built from shapes in code.
 import { seededRandom } from './ui.js';
+import { notoBox } from './art.js';
 
 let uid = 0;
 const nid = (p) => `${p}${++uid}`;
@@ -98,6 +99,31 @@ export function fishSVG(fish, cls = '') {
     <path d="${body}" fill="url(#${id}g)"/>
     <g clip-path="url(#${id}c)">${pat}</g>
     ${extra}
+  </svg>`;
+}
+
+// Any animal in Stock the Water: a fish drawn from its recipe, the stingray, or a bundled picture.
+// Every one comes back in the same box, so cards and swimmers line up.
+export function animalSVG(a, cls = '') {
+  if (a.look) return fishSVG(a, cls);
+  if (a.ray) return raySVG(a, cls);
+  const [bx, by, bw, bh] = notoBox(a.art);
+  const k = Math.min(200 / bw, 116 / bh), w = bw * k, h = bh * k;
+  return `<svg class="fish ${cls}" viewBox="0 -8 200 116" aria-label="${a.name}"><svg x="${((200 - w) / 2).toFixed(1)}" y="${(-8 + (116 - h) / 2).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" viewBox="${bx} ${by} ${bw} ${bh}"><image href="art/noto/${a.art}.svg" width="128" height="128"/></svg></svg>`;
+}
+
+// Stingray seen from above, nose to the left.
+function raySVG(a, cls) {
+  const spots = [[70, 30], [96, 22], [112, 40], [84, 52], [108, 66], [74, 72], [128, 52], [96, 80]]
+    .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 2 ? 3.2 : 4.2}" fill="#d9c7a2" opacity=".75"/>`).join('');
+  return `<svg class="fish ${cls}" viewBox="0 -8 200 116" aria-label="${a.name}">
+    <path d="M148 50 Q176 47 198 36" stroke="#6b5a48" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <path d="M18 50 Q46 22 98 -2 Q110 30 154 50 Q110 70 98 102 Q46 78 18 50 Z" fill="#9c8767"/>
+    <path d="M18 50 Q46 22 98 -2 Q96 24 60 44 Q36 50 18 50 Z" fill="#b09a78" opacity=".55"/>
+    <path d="M40 50 Q90 42 150 50" stroke="#7d6a4e" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+    ${spots}
+    <circle cx="50" cy="41" r="5" fill="#e9dcc0"/><circle cx="49.4" cy="41" r="2.8" fill="#1d1712"/>
+    <circle cx="50" cy="59" r="5" fill="#e9dcc0"/><circle cx="49.4" cy="59" r="2.8" fill="#1d1712"/>
   </svg>`;
 }
 
@@ -247,7 +273,10 @@ export function waterSVG(waterId, opts = {}) {
       ...[40, 70, 210].map(x => `<path d="M${x} 224 q 8 -20 -2 -40 q -8 -14 2 -30" stroke="#3a8a5a" stroke-width="4" fill="none"/>`));
   }
   if (opts.haze) parts.push(`<rect y="48" width="400" height="192" fill="${opts.hazeColor || '#8a7350'}" opacity="${opts.haze}"/>`);
+  // wide: the picture is laid out twice, the second time mirrored, so a long, low scene
+  // still shows the sky, the surface, and the bottom.
+  if (opts.wide) return `<svg class="water" viewBox="0 0 800 240" preserveAspectRatio="xMidYMid slice"><g id="${id}g">${parts.join('')}</g><use href="#${id}g" transform="translate(800 0) scale(-1 1)"/></svg>`;
   return `<svg class="water" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice">${parts.join('')}</svg>`;
 }
 
-export const ZONES = { top: [24, 36], mid: [38, 64], bottom: [62, 78], floor: [80, 84] };
+export const ZONES = { surface: [20, 20], top: [26, 36], mid: [38, 64], bottom: [62, 78], floor: [82, 85] };

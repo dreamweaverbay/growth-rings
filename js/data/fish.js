@@ -1,10 +1,17 @@
-// Fishing Hole data. Fish facts are kept short so he can read them himself.
+// Fishing Hole data. Facts are kept short so he can read them himself.
 
+// roster: who he can be asked to find in this water. Every one of them really lives there.
+// For the ocean, "known" animals are the ones a six-year-old expects to see; a few always show up.
 export const WATERS = [
-  { id: 'pond', name: 'Farm Pond', salt: false, blurb: 'Small, calm, and weedy' },
-  { id: 'river', name: 'River', salt: false, blurb: 'Moving water over rocks' },
-  { id: 'lake', name: 'Big Lake', salt: false, blurb: 'Wide and deep, with docks and logs' },
-  { id: 'ocean', name: 'Ocean', salt: true, blurb: 'Salty water, sand, and reefs' },
+  { id: 'pond', name: 'Farm Pond', salt: false, blurb: 'Small, calm, and weedy',
+    roster: ['largemouth', 'bluegill', 'catfish', 'crappie', 'frog', 'duck', 'turtle'] },
+  { id: 'river', name: 'River', salt: false, blurb: 'Moving water over rocks',
+    roster: ['smallmouth', 'trout', 'spotted', 'catfish', 'walleye', 'muskie', 'beaver'] },
+  { id: 'lake', name: 'Big Lake', salt: false, blurb: 'Wide and deep, with docks and logs',
+    roster: ['largemouth', 'spotted', 'striper', 'crappie', 'walleye', 'muskie', 'bluegill', 'catfish', 'turtle'] },
+  { id: 'ocean', name: 'Ocean', salt: true, blurb: 'Salty water, sand, and reefs',
+    known: ['shark', 'stingray', 'dolphin', 'whale', 'octopus', 'jellyfish', 'crab'],
+    roster: ['tuna', 'mahi', 'redfish', 'flounder', 'snapper', 'tarpon', 'seatrout', 'striper'] },
 ];
 
 // look: drawing recipe for fishart.js
@@ -111,6 +118,36 @@ export const FISH = [
     need: 'salty ocean water',
     look: { depth: 0.3, back: '#5d7480', side: '#d6dde2', belly: '#f6f7f8', fin: '#9aa8b0', pattern: ['scales'], tail: 'deepfork', mouth: 'up' },
   },
+];
+
+// Other animals for Stock the Water. They are pictures, not fish recipes, so the fish
+// quizzes in Field Guide leave them out.
+//   art: bundled picture, ray: drawn in fishart.js, w: width in the scene (percent),
+//   move: 'still' | 'slow' | 'drift' (default is swimming), sym: looks the same both ways,
+//   wrongIn: false means never offered as a wrong answer (its cousins live in the other kind of water).
+export const ANIMALS = [
+  { id: 'shark', name: 'Shark', water: 'salt', homes: ['ocean'], zone: 'mid', art: 'shark', w: 30,
+    fact: 'A shark has rows of teeth. When one falls out, a new one moves up.', need: 'salty ocean water' },
+  { id: 'stingray', name: 'Stingray', water: 'salt', homes: ['ocean'], zone: 'bottom', ray: true, w: 17, move: 'slow',
+    fact: 'A flat fish that glides like a bird. It is a cousin of the shark.', need: 'salty ocean water' },
+  { id: 'dolphin', name: 'Dolphin', water: 'salt', homes: ['ocean'], zone: 'top', art: 'dolphin', w: 28,
+    fact: 'Not a fish! A dolphin is a mammal. It comes up to breathe air.', need: 'salty ocean water' },
+  { id: 'whale', name: 'Whale', water: 'salt', homes: ['ocean'], zone: 'mid', art: 'whale', w: 34, move: 'slow',
+    fact: 'Whales are the biggest animals on Earth. They are mammals, not fish.', need: 'the deep, salty ocean' },
+  { id: 'octopus', name: 'Octopus', water: 'salt', homes: ['ocean'], zone: 'bottom', art: 'octopus', w: 19, move: 'slow', sym: true,
+    fact: 'It has eight arms and three hearts. It can squeeze into tiny cracks.', need: 'salty ocean water' },
+  { id: 'jellyfish', name: 'Jellyfish', water: 'salt', homes: ['ocean'], zone: 'mid', art: 'jellyfish', w: 15, move: 'drift', sym: true,
+    fact: 'It has no bones and no brain. Its tentacles can sting.', need: 'salty ocean water' },
+  { id: 'crab', name: 'Crab', water: 'salt', homes: ['ocean'], zone: 'floor', art: 'crab', w: 13, move: 'slow', sym: true,
+    fact: 'It walks sideways and wears its hard shell like armor.', need: 'salty ocean water' },
+  { id: 'frog', name: 'Bullfrog', water: 'fresh', homes: ['pond', 'lake', 'river'], zone: 'surface', art: 'frog', w: 9, move: 'still', sym: true,
+    fact: 'It starts life as a tadpole. It floats with just its eyes above the water.', need: 'fresh water, like a pond' },
+  { id: 'duck', name: 'Mallard Duck', water: 'fresh', homes: ['pond', 'lake', 'river'], zone: 'surface', art: 'duck', w: 15, move: 'slow', wrongIn: false,
+    fact: 'It paddles on top and tips upside down to eat water plants.', need: 'calm fresh water' },
+  { id: 'turtle', name: 'Pond Turtle', water: 'fresh', homes: ['pond', 'lake', 'river'], zone: 'top', art: 'turtle', w: 14, move: 'slow', wrongIn: false,
+    fact: 'It climbs onto a log to warm up in the sun.', need: 'calm fresh water' },
+  { id: 'beaver', name: 'Beaver', water: 'fresh', homes: ['river', 'pond', 'lake'], zone: 'surface', art: 'beaver', w: 17, move: 'slow',
+    fact: 'It cuts down trees with its teeth and builds dams.', need: 'fresh water with trees nearby' },
 ];
 
 /* ---------- Lure Lab ---------- */

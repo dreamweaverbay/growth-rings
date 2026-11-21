@@ -46,7 +46,7 @@ export const icons = {
 // Activity icons — simple, flat, not cartoonish.
 export const activityIcons = {
   story: `<svg viewBox="0 0 64 64"><path d="M8 14c8-3 16-3 24 2v36c-8-5-16-5-24-2z" fill="#f4d9b0" stroke="#7a4a22" stroke-width="2.5" stroke-linejoin="round"/><path d="M56 14c-8-3-16-3-24 2v36c8-5 16-5 24-2z" fill="#fbe9cc" stroke="#7a4a22" stroke-width="2.5" stroke-linejoin="round"/><path d="M40 44c3-6 2-10-2-14s-2-8 3-10" fill="none" stroke="#c9742e" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 5"/><path d="M16 26h9M16 32h9M16 38h6" stroke="#b08158" stroke-width="2.2" stroke-linecap="round"/></svg>`,
-  grove: `<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="8" fill="#e9f0dc" stroke="#4e7a32" stroke-width="2.5"/><path d="M32 8v48M8 32h48" stroke="#4e7a32" stroke-width="2.5"/><path d="M14 26c0-7 4-11 11-11 0 7-4 11-11 11z" fill="#5f8f3e"/><ellipse cx="44" cy="22" rx="5.5" ry="6.5" fill="#a8672e"/><path d="M37.5 18.5c1-4 12-4 13 0z" fill="#6b3f1a"/><path d="M18 40h12a6 6 0 01-12 0z" fill="#c9453a" transform="translate(2 -2)"/><rect x="24" y="44" width="4" height="6" rx="1.5" fill="#f1e2c9"/><path d="M44 38l6 12h-12z" fill="#7a5532"/></svg>`,
+  grove: `<svg viewBox="0 0 64 64"><rect x="8" y="8" width="48" height="48" rx="8" fill="#e9f0dc" stroke="#4e7a32" stroke-width="2.5"/><path d="M32 8v48M8 32h48" stroke="#4e7a32" stroke-width="2.5"/><path d="M14 26c0-7 4-11 11-11 0 7-4 11-11 11z" fill="#5f8f3e"/><ellipse cx="44" cy="22" rx="5.5" ry="6.5" fill="#a8672e"/><path d="M37.5 18.5c1-4 12-4 13 0z" fill="#6b3f1a"/><rect x="18" y="43" width="4" height="8" rx="1.5" fill="#f1e2c9"/><path d="M12 45a8 8 0 0116 0z" fill="#c9453a"/><path d="M44 38l6 12h-12z" fill="#7a5532"/></svg>`,
   magic: `<svg viewBox="0 0 64 64"><ellipse cx="32" cy="50" rx="22" ry="6" fill="#3a2a4a"/><path d="M18 50V24h28v26z" fill="#4b3560"/><rect x="18" y="38" width="28" height="5" fill="#c94f6d"/><ellipse cx="32" cy="24" rx="14" ry="4" fill="#5d4378"/><path d="M50 10l1.8 4.2L56 16l-4.2 1.8L50 22l-1.8-4.2L44 16l4.2-1.8z" fill="#f2c14e"/><path d="M12 14l1.1 2.4L15.5 17.5l-2.4 1.1L12 21l-1.1-2.4L8.5 17.5l2.4-1.1z" fill="#f2c14e"/></svg>`,
   weather: `<svg viewBox="0 0 64 64"><circle cx="24" cy="24" r="10" fill="#f2b33d"/><g stroke="#f2b33d" stroke-width="3" stroke-linecap="round"><path d="M24 6v4M24 38v4M6 24h4M10.5 10.5l3 3M34.5 13.5l3-3M10.5 37.5l3-3"/></g><path d="M22 50a9 9 0 010-18 12 12 0 0123 3 7.5 7.5 0 011 15z" fill="#fff" stroke="#3f7fb8" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
   facts: `<svg viewBox="0 0 64 64"><path d="M10 40C10 20 22 8 44 8c0 22-12 34-34 32z" fill="#6fae55"/><path d="M10 40L34 18" stroke="#3d6b25" stroke-width="2.5" stroke-linecap="round"/><circle cx="38" cy="38" r="13" fill="#eaf5fb" fill-opacity=".85" stroke="#5b3a22" stroke-width="4"/><path d="M48 48l10 10" stroke="#5b3a22" stroke-width="6" stroke-linecap="round"/></svg>`,
@@ -119,7 +119,8 @@ export function overlay(content, cls = '') {
 
 // Grown-up gate: a multiplication question a six-year-old is unlikely to answer.
 export function grownUpGate(onPass) {
-  const a = 12 + Math.floor(Math.random() * 8);
+  // Times-table facts a grown-up knows by heart and a six-year-old does not.
+  const a = 4 + Math.floor(Math.random() * 6);
   const b = 6 + Math.floor(Math.random() * 4);
   const input = el('input', { class: 'gate-input', inputmode: 'numeric', type: 'text', autocomplete: 'off', 'aria-label': 'Answer' });
   const msg = el('p', { class: 'gate-msg' }, '');

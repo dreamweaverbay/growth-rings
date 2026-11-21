@@ -94,20 +94,21 @@ export const ORDER = [
     steps: [['Eggs in a nest', ICONS.bassEggs], ['Tiny fry', ICONS.bassFry], ['Young bass', ICONS.bassYoung], ['Big bass', ICONS.bassAdult]] },
 ];
 
-const E = (label, emoji, bin) => ({ label, emoji, bin });
+// E: an animal with a bundled picture (art/noto). F: a fish drawn from its recipe.
+const E = (label, art, bin) => ({ label, art, bin });
 const F = (fish, bin) => ({ fish, bin });
 
 export const SORT = [
   { id: 's-eggs', t: 'life', prompt: 'How is each animal born?', bins: ['Hatches from an egg', 'Born alive'], fact: 'Birds, frogs, turtles, and most fish hatch from eggs. Dogs, cows, deer, and other mammals are born alive.',
-    items: [E('Chicken', '🐔', 0), E('Frog', '🐸', 0), E('Turtle', '🐢', 0), E('Duck', '🦆', 0), E('Dog', '🐕', 1), E('Cow', '🐄', 1), E('Deer', '🦌', 1), E('Horse', '🐎', 1)] },
+    items: [E('Chicken', 'hen', 0), E('Frog', 'frog', 0), E('Turtle', 'turtle', 0), E('Duck', 'duck', 0), E('Dog', 'dog', 1), E('Cow', 'cow', 1), E('Deer', 'deer', 1), E('Horse', 'horse', 1)] },
   { id: 's-insects', t: 'animals', prompt: 'Is it an insect? Insects have six legs.', bins: ['Insect', 'Not an insect'], fact: 'Insects have six legs. Spiders have eight legs, and snails have none, so they are not insects.',
-    items: [E('Ant', '🐜', 0), E('Bee', '🐝', 0), E('Butterfly', '🦋', 0), E('Ladybug', '🐞', 0), E('Spider', '🕷️', 1), E('Snail', '🐌', 1), E('Frog', '🐸', 1), E('Mouse', '🐭', 1)] },
+    items: [E('Ant', 'ant', 0), E('Bee', 'bee', 0), E('Butterfly', 'butterfly', 0), E('Ladybug', 'ladybug', 0), E('Spider', 'spider', 1), E('Snail', 'snail', 1), E('Frog', 'frog', 1), E('Mouse', 'mouse', 1)] },
   { id: 's-water', t: 'fish', prompt: 'Where does each fish live?', bins: ['Fresh water', 'Salt water'], fact: 'Bass, bluegill, catfish, and crappie live in fresh water. Redfish, tuna, flounder, and mahi-mahi live in salt water.',
     items: [F('largemouth', 0), F('bluegill', 0), F('catfish', 0), F('crappie', 0), F('redfish', 1), F('tuna', 1), F('flounder', 1), F('mahi', 1)] },
   { id: 's-home', t: 'animals', prompt: 'Where does each animal live?', bins: ['On a farm', 'In the woods'], fact: 'Cows, chickens, goats, and pigs live on farms. Deer, foxes, owls, and raccoons live in the woods.',
-    items: [E('Cow', '🐄', 0), E('Chicken', '🐔', 0), E('Goat', '🐐', 0), E('Pig', '🐖', 0), E('Deer', '🦌', 1), E('Fox', '🦊', 1), E('Owl', '🦉', 1), E('Raccoon', '🦝', 1)] },
+    items: [E('Cow', 'cow', 0), E('Chicken', 'hen', 0), E('Goat', 'goat', 0), E('Pig', 'pig', 0), E('Deer', 'deer', 1), E('Fox', 'fox', 1), E('Owl', 'owl', 1), E('Raccoon', 'raccoon', 1)] },
   { id: 's-night', t: 'animals', prompt: 'When is each animal awake?', bins: ['In the day', 'At night'], fact: 'Owls, bats, and raccoons are awake at night. Chickens, squirrels, and butterflies are awake in the day.',
-    items: [E('Chicken', '🐔', 0), E('Squirrel', '🐿️', 0), E('Butterfly', '🦋', 0), E('Owl', '🦉', 1), E('Bat', '🦇', 1), E('Raccoon', '🦝', 1)] },
+    items: [E('Chicken', 'hen', 0), E('Squirrel', 'squirrel', 0), E('Butterfly', 'butterfly', 0), E('Owl', 'owl', 1), E('Bat', 'bat', 1), E('Raccoon', 'raccoon', 1)] },
 ];
 
 const ID = (id, q, img, a, f) => ({ id, t: 'signs', q, img, a, f });

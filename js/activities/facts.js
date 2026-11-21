@@ -3,6 +3,7 @@ import { el, svg, icons, shake, shuffle } from '../ui.js';
 import { CHOICE, ORDER, SORT, IDENT, TOPICS } from '../data/facts.js';
 import { FISH } from '../data/fish.js';
 import { fishSVG } from '../fishart.js';
+import { noto } from '../art.js';
 
 const fishIdent = FISH.map(f => ({ id: 'fish-' + f.id, t: 'fish', fish: f, f: `${f.name}: ${f.fact}` }));
 const TOTAL = CHOICE.length + ORDER.length + SORT.length + IDENT.length + fishIdent.length;
@@ -142,7 +143,7 @@ export function start(ctx) {
     const hint = el('p', { class: 'fg-hint' }, 'Tap the box where it belongs.');
     const face = (it, small) => (it.fish
       ? el('div', { class: 'fg-item' + (small ? ' small' : '') }, svg(fishSVG(FISH.find(f => f.id === it.fish)), 'fg-item-fish'), el('span', {}, FISH.find(f => f.id === it.fish).name))
-      : el('div', { class: 'fg-item' + (small ? ' small' : '') }, el('span', { class: 'emoji fg-item-emoji' }, it.emoji), el('span', {}, it.label)));
+      : el('div', { class: 'fg-item' + (small ? ' small' : '') }, svg(noto(it.art), 'fg-item-art'), el('span', {}, it.label)));
     const showItem = () => { holder.innerHTML = ''; if (at < queue.length) holder.append(face(queue[at])); };
     function drop(b) {
       if (at >= queue.length) return;

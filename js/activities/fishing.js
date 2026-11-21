@@ -1,7 +1,7 @@
 // Fishing Hole: stock the right water with the right fish, and design baits in the Lure Lab.
 import { el, svg, icons, shake, shuffle, randInt, overlay } from '../ui.js';
-import { FISH, WATERS, BAITS, COLORWAYS, NAME_WORDS, CLARITY } from '../data/fish.js';
-import { fishSVG, lureSVG, waterSVG, ZONES } from '../fishart.js';
+import { FISH, ANIMALS, WATERS, BAITS, COLORWAYS, NAME_WORDS, CLARITY } from '../data/fish.js';
+import { fishSVG, animalSVG, lureSVG, waterSVG, ZONES } from '../fishart.js';
 
 const WEIGHT = { largemouth: [1, 7], spotted: [1, 4], smallmouth: [1, 5], walleye: [1, 8], striper: [4, 25], catfish: [2, 15], trout: [1, 4] };
 const DEPTH_Y = { top: 25, mid: 52, bottom: 76 };
@@ -38,7 +38,7 @@ export function start(ctx) {
           el('div', { class: 'fh-mode-art' }, svg(waterSVG('lake'), 'fh-mode-water'), svg(fishSVG(demo[0]), 'fh-mode-fish a'), svg(fishSVG(fishById.bluegill), 'fh-mode-fish b')),
           el('div', { class: 'fh-mode-text' },
             el('span', { class: 'fh-mode-title' }, 'Stock the Water'),
-            el('span', { class: 'muted' }, 'Put each fish where it really lives'),
+            el('span', { class: 'muted' }, 'Put each animal where it really lives'),
             stocked ? el('span', { class: 'tale-done' }, svg(icons.check), `${stocked} of 4 waters stocked`) : null)),
         el('button', { class: 'fh-mode', onclick: () => { sfx.pick(); lureLab(); } },
           el('div', { class: 'fh-mode-art lure-art' }, svg(lureSVG('crank', COLORWAYS[5], { flake: true }), 'fh-mode-lure')),
@@ -73,13 +73,15 @@ export function start(ctx) {
 
   function stock(water) {
     reset();
-    const belong = FISH.filter(f => f.homes.includes(water.id));
-    const goals = shuffle(belong).slice(0, Math.min(5, belong.length));
-    const wrong = shuffle(FISH.filter(f => !f.homes.includes(water.id)));
-    const opposite = wrong.filter(f => (water.salt ? f.water === 'fresh' : f.water === 'salt'));
-    const sameKind = wrong.filter(f => !opposite.includes(f));
-    const distract = water.salt ? opposite.slice(0, 4) : [...opposite.slice(0, 2), ...sameKind.slice(0, 2)];
-    while (distract.length < 4 && opposite.length > distract.length) distract.push(opposite[distract.length]);
+    // Right answers come from this water's own list. Wrong answers always come from the
+    // other kind of water (salt or fresh), so there is a clear reason each one does not fit.
+    const all = [...FISH, ...ANIMALS];
+    const byId = Object.fromEntries(all.map(f => [f.id, f]));
+    const take = (ids, n) => shuffle(ids).slice(0, n).map(id => byId[id]);
+    const goals = water.known ? [...take(water.known, 3), ...take(water.roster, 2)] : take(water.roster, 5);
+    const other = all.filter(f => f.water === (water.salt ? 'fresh' : 'salt') && f.wrongIn !== false);
+    const otherKnown = shuffle(other.filter(f => !f.look)), otherFish = shuffle(other.filter(f => f.look));
+    const distract = water.salt ? [...otherFish.slice(0, 3), ...otherKnown.slice(0, 1)] : [...otherKnown.slice(0, 2), ...otherFish.slice(0, 2)];
     const tray = shuffle([...goals, ...distract]);
     let placed = 0;
     let selected = null;
@@ -87,19 +89,19 @@ export function start(ctx) {
     const counter = el('span', { class: 'fh-counter' }, `0 / ${goals.length}`);
     const bubble = el('div', { class: 'fh-bubble' });
     const layer = el('div', { class: 'fh-layer' });
-    const scene = el('div', { class: 'fh-scene' }, svg(waterSVG(water.id), 'fh-scene-bg'), layer, bubble);
+    const scene = el('div', { class: 'fh-scene' }, svg(waterSVG(water.id, { wide: true }), 'fh-scene-bg'), layer, bubble);
     const trayEl = el('div', { class: 'fh-tray' });
     body.append(
       el('div', { class: 'fh-top' },
         el('button', { class: 'smallbtn', onclick: () => { sfx.tap(); chooseWater(); } }, '← Waters'),
-        el('h2', {}, `Find the ${goals.length} fish that live in the ${water.name.toLowerCase()}`),
+        el('h2', {}, `Find the ${goals.length} animals that live in the ${water.name.toLowerCase()}`),
         counter),
       scene,
-      el('p', { class: 'fh-hint' }, 'Drag a fish into the water, or tap a fish and then tap the water.'),
+      el('p', { class: 'fh-hint' }, 'Drag an animal into the water, or tap one and then tap the water.'),
       trayEl);
 
     tray.forEach(f => {
-      const card = el('button', { class: 'fh-card' }, svg(fishSVG(f), 'fh-card-fish'), el('span', {}, f.name));
+      const card = el('button', { class: 'fh-card' }, svg(animalSVG(f), 'fh-card-fish'), el('span', {}, f.name));
       card.addEventListener('pointerdown', (e) => grab(e, f, card));
       trayEl.append(card);
     });
@@ -118,7 +120,7 @@ export function start(ctx) {
       try { card.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
       const move = (ev) => {
         if (!ghost && Math.hypot(ev.clientX - sx, ev.clientY - sy) > 10) {
-          ghost = el('div', { class: 'fh-ghost', html: fishSVG(f) });
+          ghost = el('div', { class: 'fh-ghost', html: animalSVG(f) });
           document.body.append(ghost);
           sfx.tap();
         }
@@ -170,31 +172,36 @@ export function start(ctx) {
       } else {
         sfx.nope();
         shake(card);
-        say(`<strong>Not here.</strong> ${an(f.name)} ${f.name} needs ${f.need}.`, 'bad');
+        say(`<strong>Not here.</strong> ${an(f.name)} ${f.name} lives in ${water.salt ? 'fresh' : 'salt'} water. The ${water.name.toLowerCase()} is ${water.salt ? 'salt' : 'fresh'} water.`, 'bad');
       }
     }
 
     const swimmers = [];
     function addSwimmer(f, fx, fy) {
       const [z0, z1] = ZONES[f.zone];
-      const node = el('div', { class: 'swimmer' + (f.look.flat ? ' flat' : ''), html: fishSVG(f) });
+      const flat = f.look && f.look.flat;
+      const still = flat || f.move === 'still';
+      const pace = f.move === 'slow' ? 0.4 : f.move === 'drift' ? 0.2 : 1;
+      const w = f.w || (flat ? 15 : 17);
+      const node = el('div', { class: 'swimmer', html: animalSVG(f) });
+      node.style.width = `min(${w}%, ${Math.round(w * 11)}px)`;
       node.addEventListener('pointerdown', (e) => { if (selected) return; e.stopPropagation(); sfx.pick(); say(`<strong>${f.name}.</strong> ${f.fact}`, 'good'); });
       layer.append(node);
-      swimmers.push({ node, f, x: clamp(fx * 100 - 9, 2, 80), y: clamp(fy * 100, z0, z1), vx: (Math.random() < 0.5 ? -1 : 1) * (0.03 + Math.random() * 0.035), ph: Math.random() * 6 });
-      node.animate([{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 400, easing: 'ease-out' });
+      swimmers.push({ node, f, still, w, x: clamp(fx * 100 - w / 2, 1, 99 - w), y: clamp(fy * 100, z0, z1), vx: (Math.random() < 0.5 ? -1 : 1) * (0.03 + Math.random() * 0.035) * pace, ph: Math.random() * 6 });
+      node.animate([{ transform: 'translateY(-50%) scale(.4)', opacity: 0 }, { transform: 'translateY(-50%) scale(1)', opacity: 1 }], { duration: 400, easing: 'ease-out' });
       if (!raf) raf = requestAnimationFrame(loop);
     }
     function loop(t) {
       raf = requestAnimationFrame(loop);
       for (const s of swimmers) {
-        if (!s.f.look.flat) {
+        if (!s.still) {
           s.x += s.vx;
-          if (s.x < 1 || s.x > 81) s.vx *= -1;
+          if (s.x < 1 || s.x > 99 - s.w) s.vx *= -1;
         }
-        const bob = s.f.look.flat ? 0 : Math.sin(t / 650 + s.ph) * 1.1;
+        const bob = s.still ? 0 : Math.sin(t / (s.f.move === 'drift' ? 900 : 650) + s.ph) * (s.f.move === 'drift' ? 2.4 : s.f.zone === 'surface' || s.f.zone === 'floor' ? 0.3 : 1.1);
         s.node.style.left = s.x + '%';
         s.node.style.top = (s.y + bob) + '%';
-        s.node.firstElementChild.style.transform = `scaleX(${s.vx > 0 ? -1 : 1})`;
+        if (!s.f.sym) s.node.firstElementChild.style.transform = `scaleX(${s.vx > 0 ? -1 : 1})`;
       }
     }
 
@@ -202,8 +209,8 @@ export function start(ctx) {
       store.update(s => { s.fishing.stocked[water.id] = (s.fishing.stocked[water.id] || 0) + 1; });
       ctx.finish({
         title: `The ${water.name.toLowerCase()} is stocked!`,
-        line: 'Every fish found the right home.',
-        grownPrompt: 'Ask a grown-up who fishes: which of these fish have they caught, and where?',
+        line: 'Every animal found the right home.',
+        grownPrompt: 'Ask a grown-up: which of these animals have they seen or caught, and where?',
         note: water.id,
         againLabel: 'Another water',
         onAgain: chooseWater,

@@ -1,4 +1,5 @@
-// Scene art for Trail Tales. Flat shapes, drawn in code.
+// Scene art for Trail Tales. Settings and objects are drawn in code.
+// Animals and the pie are bundled illustrations (Noto Emoji, see art/noto/README.md).
 // Every prop is drawn with its bottom-center at (0,0), about 60 units tall at scale 1.
 
 const P = {
@@ -19,21 +20,10 @@ const P = {
   house: () => `<rect x="-38" y="-44" width="76" height="44" fill="#f0e2c8"/><path d="M-44 -42 L0 -72 L44 -42 Z" fill="#7a4e2c"/><rect x="-26" y="-34" width="22" height="18" fill="#bfe3f2" stroke="#7a4e2c" stroke-width="3"/><path d="M-15 -34 V-16 M-26 -25 H-4" stroke="#7a4e2c" stroke-width="2"/><rect x="10" y="-30" width="16" height="30" fill="#8a5a33"/>`,
   bridge: () => `<path d="M-60 0 Q0 -26 60 0" fill="none" stroke="#8a5a33" stroke-width="7"/><path d="M-60 -14 Q0 -40 60 -14" fill="none" stroke="#a8743f" stroke-width="3"/>${[-44, -22, 0, 22, 44].map(x => `<line x1="${x}" y1="${-26 + Math.abs(x) * 0.33 - 1}" x2="${x}" y2="${-12 + Math.abs(x) * 0.25}" stroke="#a8743f" stroke-width="3"/>`).join('')}`,
   halfbridge: () => `<path d="M-60 0 Q-30 -16 -6 -20" fill="none" stroke="#8a5a33" stroke-width="7"/><path d="M60 0 Q36 -14 18 -19" fill="none" stroke="#8a5a33" stroke-width="7" stroke-dasharray="0"/><path d="M-60 -14 Q-30 -32 -6 -34" fill="none" stroke="#a8743f" stroke-width="3"/>`,
-  fox: () => `<path d="M14 -10 Q34 -12 36 -26 Q28 -18 16 -20 Z" fill="#d9792f"/><path d="M36 -26 Q35 -21 31 -19 Q34 -24 36 -26z" fill="#fff4e6"/>
-    <ellipse cx="0" cy="-14" rx="18" ry="11" fill="#e0843a"/><rect x="-12" y="-6" width="4" height="6" fill="#5b3a22"/><rect x="6" y="-6" width="4" height="6" fill="#5b3a22"/>
-    <path d="M-14 -20 L-26 -30 L-24 -40 L-18 -34 L-10 -36 L-6 -26 Z" fill="#e0843a"/><path d="M-25 -31 L-35 -27 L-24 -23 Z" fill="#e0843a"/><path d="M-30 -25.5 L-24 -23 L-26 -27 Z" fill="#fff4e6"/><circle cx="-19" cy="-30" r="1.8" fill="#3b2a1e"/><circle cx="-34.5" cy="-27" r="1.8" fill="#3b2a1e"/>`,
-  owl: () => `<ellipse cx="0" cy="-20" rx="14" ry="20" fill="#9a7552"/><ellipse cx="0" cy="-14" rx="9" ry="12" fill="#d9c2a0"/><path d="M-12 -36 L-8 -44 L-3 -37 M12 -36 L8 -44 L3 -37" fill="#9a7552"/>
-    <circle cx="-5.5" cy="-30" r="5" fill="#fff8ea"/><circle cx="5.5" cy="-30" r="5" fill="#fff8ea"/><circle cx="-5.5" cy="-30" r="2.2" fill="#3b2a1e"/><circle cx="5.5" cy="-30" r="2.2" fill="#3b2a1e"/><path d="M-2 -25 L0 -21 L2 -25 Z" fill="#e3ad25"/>`,
-  beaver: () => `<ellipse cx="22" cy="-6" rx="12" ry="5" fill="#5b3a22" transform="rotate(-10 22 -6)"/><ellipse cx="0" cy="-16" rx="17" ry="15" fill="#8a5a33"/><circle cx="-12" cy="-28" r="10" fill="#9a6a40"/><circle cx="-16" cy="-31" r="1.8" fill="#3b2a1e"/><rect x="-22" y="-25" width="5" height="5" rx="1" fill="#fff8ea"/><circle cx="-6" cy="-36" r="3" fill="#8a5a33"/>`,
-  mole: () => `<ellipse cx="0" cy="-10" rx="16" ry="10" fill="#4a3b36"/><ellipse cx="-16" cy="-10" rx="6" ry="4" fill="#d98c8c"/><circle cx="-10" cy="-13" r="1.4" fill="#000"/><path d="M-6 -2 l-4 3 M2 -2 l-2 4" stroke="#d98c8c" stroke-width="2.5" stroke-linecap="round"/>`,
-  hen: () => `<ellipse cx="0" cy="-14" rx="14" ry="12" fill="#f5efe4"/><path d="M10 -18 L22 -26 L18 -14 Z" fill="#e8dfcf"/><circle cx="-10" cy="-26" r="8" fill="#f5efe4"/><path d="M-12 -34 q2 -5 4 0 q2 -5 4 0" fill="#c9453a"/><path d="M-18 -26 L-22 -24 L-18 -22 Z" fill="#e3ad25"/><circle cx="-11" cy="-27" r="1.4" fill="#3b2a1e"/><path d="M-3 -2 V0 M3 -2 V0" stroke="#e3ad25" stroke-width="2.5"/>`,
-  goat: () => `<ellipse cx="0" cy="-22" rx="20" ry="11" fill="#e8e2d6"/><rect x="-14" y="-14" width="4" height="14" fill="#cfc7b8"/><rect x="10" y="-14" width="4" height="14" fill="#cfc7b8"/><path d="M-16 -26 L-28 -38 L-22 -42 L-14 -32 Z" fill="#e8e2d6"/><path d="M-24 -40 q-4 -10 4 -12 M-20 -41 q0 -9 7 -9" stroke="#8a7563" stroke-width="2.5" fill="none"/><circle cx="-23" cy="-37" r="1.5" fill="#3b2a1e"/><path d="M-27 -32 l-2 5" stroke="#cfc7b8" stroke-width="3"/>`,
-  frog: () => `<ellipse cx="0" cy="-7" rx="12" ry="7" fill="#5aa04a"/><circle cx="-6" cy="-13" r="4" fill="#5aa04a"/><circle cx="6" cy="-13" r="4" fill="#5aa04a"/><circle cx="-6" cy="-14" r="1.6" fill="#1e2a1a"/><circle cx="6" cy="-14" r="1.6" fill="#1e2a1a"/>`,
   fish: () => `<path d="M-14 -6 Q0 -16 12 -6 Q0 4 -14 -6 Z" fill="#e88b3a"/><path d="M12 -6 L20 -12 L20 0 Z" fill="#e88b3a"/><circle cx="-7" cy="-7" r="1.4" fill="#3b2a1e"/>`,
   lantern: (lit) => `${lit ? '<circle cx="0" cy="-16" r="22" fill="#ffd56a" opacity=".35"/>' : ''}<path d="M-6 -30 Q0 -38 6 -30" fill="none" stroke="#3b2a1e" stroke-width="2"/><rect x="-9" y="-30" width="18" height="4" rx="1" fill="#3b2a1e"/><rect x="-8" y="-26" width="16" height="22" rx="3" fill="${lit ? '#ffd56a' : '#b9a98c'}" stroke="#3b2a1e" stroke-width="2"/><rect x="-10" y="-4" width="20" height="4" rx="1" fill="#3b2a1e"/>`,
   moon: () => `<circle cx="0" cy="-20" r="16" fill="#f5edd0"/><circle cx="7" cy="-25" r="14" fill="var(--sky-moon, #1f2a4a)"/>`,
   sun: () => `<circle cx="0" cy="-20" r="16" fill="#f7c64c"/>`,
-  pie: () => `<path d="M-20 -6 Q0 -22 20 -6 Z" fill="#e2a65a"/><rect x="-22" y="-7" width="44" height="7" rx="3" fill="#c9853f"/><path d="M-10 -12 l4 -2 M2 -15 l4 -1 M10 -10 l3 -2" stroke="#9a4a2f" stroke-width="2" stroke-linecap="round"/>`,
   crumbs: () => `<circle cx="-8" cy="-2" r="2" fill="#c9853f"/><circle cx="2" cy="-1.5" r="1.6" fill="#c9853f"/><circle cx="10" cy="-2.5" r="2.2" fill="#c9853f"/><circle cx="16" cy="-1" r="1.4" fill="#c9853f"/>`,
   acorn: () => `<ellipse cx="0" cy="-8" rx="6" ry="8" fill="#a8672e"/><path d="M-7 -12 Q0 -20 7 -12 Z" fill="#6b3f1a"/><line x1="0" y1="-18" x2="1" y2="-21" stroke="#6b3f1a" stroke-width="2"/>`,
   sapling: () => `<path d="M0 0 V-18" stroke="#6b4426" stroke-width="2.5"/><path d="M0 -12 Q-10 -16 -12 -24 Q-2 -22 0 -14 Z" fill="#6fae55"/><path d="M0 -16 Q10 -20 12 -28 Q2 -26 0 -18 Z" fill="#5e9a48"/>`,
@@ -45,6 +35,25 @@ const P = {
   window: () => `<rect x="-24" y="-40" width="48" height="40" fill="#bfe3f2" stroke="#7a4e2c" stroke-width="4"/><path d="M0 -40 V0 M-24 -20 H24" stroke="#7a4e2c" stroke-width="3"/><rect x="-30" y="-2" width="60" height="6" fill="#7a4e2c"/>`,
   sign: (txt = '') => `<rect x="-2" y="-30" width="4" height="30" fill="#7a4e2c"/><rect x="-22" y="-44" width="44" height="18" rx="3" fill="#d9a35b" stroke="#7a4e2c" stroke-width="2"/>`,
 };
+
+// Bundled illustrations. Each entry is the picture's visible box inside its 128 x 128 file,
+// so pictures can be placed by their true edges.
+const NOTO = {"ant": [4, 13, 120, 107.5], "bat": [1, 27, 126, 82.5], "beaver": [3, 3.5, 122.5, 121], "bee": [4, 8.5, 120, 113.5], "butterfly": [3, 9.5, 122, 105], "cow": [3.5, 18, 120.5, 101.5], "crab": [0, 20, 127.5, 90.5], "deer": [21.5, 4.5, 75.5, 119.5], "dog": [4, 4.5, 113.5, 120], "dolphin": [9, 4.5, 110, 118.5], "duck": [7, 4, 109, 122], "fox": [4.5, 7.5, 119, 112.5], "frog": [4.5, 17, 119, 103], "goat": [19.5, 4, 85, 120], "hen": [5, 7.5, 118, 116], "horse": [3, 9, 124, 111.5], "jellyfish": [19, 4, 102.5, 120.5], "ladybug": [11.5, 4.5, 109.5, 116.5], "mouse": [11.5, 23, 102, 100.5], "octopus": [5, 16, 118.5, 108], "owl": [21, 6, 85.5, 118], "pie": [3.5, 7.5, 120.5, 113], "pig": [5, 15, 119, 105.5], "rabbit": [17, 3.5, 97, 120.5], "raccoon": [4, 49, 120, 67.5], "shark": [4, 5.5, 118.5, 116.5], "snail": [4, 6, 121, 114.5], "spider": [0.5, 12.5, 127, 111], "squirrel": [4, 18.5, 120, 101.5], "turtle": [4.5, 25, 119.5, 95], "whale": [4, 6, 120, 114]};
+export const notoBox = (name) => NOTO[name];
+
+// Standalone picture, cropped to its visible edges.
+export function noto(name) {
+  const [bx, by, bw, bh] = NOTO[name];
+  return `<svg viewBox="${bx} ${by} ${bw} ${bh}"><image href="art/noto/${name}.svg" width="128" height="128"/></svg>`;
+}
+
+// Height of each illustrated prop at scale 1. All of them face left unless flipped.
+const TALL = { beaver: 46, raccoon: 34, goat: 54, mouse: 22, owl: 44, hen: 38, turtle: 24, rabbit: 38, pie: 30 };
+Object.keys(TALL).forEach(name => {
+  const [bx, by, bw, bh] = NOTO[name];
+  const h = TALL[name], w = h * bw / bh;
+  P[name] = () => `<svg x="${(-w / 2).toFixed(1)}" y="${-h}" width="${w.toFixed(1)}" height="${h}" viewBox="${bx} ${by} ${bw} ${bh}"><image href="art/noto/${name}.svg" width="128" height="128"/></svg>`;
+});
 
 export const PROPS = Object.keys(P);
 
@@ -102,6 +111,7 @@ export function propIcon(name, extra) {
     stump: '-24 -26 48 28', nest: '-20 -14 40 20', fish: '-16 -16 38 20', acorn: '-9 -23 18 25', sapling: '-14 -30 28 32',
     pie: '-24 -24 48 26', lantern: '-24 -40 48 42',
   };
+  if (TALL[name]) return noto(name);
   const vb = boxes[name] || '-40 -60 80 62';
   return `<svg viewBox="${vb}">${P[name] ? P[name](extra) : ''}</svg>`;
 }
