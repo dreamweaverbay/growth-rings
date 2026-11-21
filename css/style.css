@@ -761,3 +761,15 @@ p { margin: 0; }
 .fg-item.small .fg-item-art { width: 52px; height: 46px; }
 .smallbtn .svgwrap { display: inline-flex; width: 18px; height: 18px; flex: none; vertical-align: -3px; }
 .smallbtn .svgwrap svg { width: 100%; height: 100%; }
+
+/* ---------- Bait name picker: two labeled boxes ---------- */
+.ll-build { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-family: var(--read); font-size: 24px; font-weight: 700; color: var(--bark); margin: 2px 0 10px; }
+.ll-slot { min-width: 112px; padding: 4px 12px; border-radius: 10px; border: 2px dashed var(--gc); color: var(--gc); text-align: center; }
+.ll-slot.filled { border-style: solid; background: var(--gbg); color: var(--bark); }
+.ll-group { border-radius: 14px; padding: 8px 12px 10px; margin-bottom: 8px; background: var(--gbg); box-shadow: 0 0 0 2px var(--gc) inset; }
+.ll-group-head { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 17px; color: var(--bark); margin-bottom: 8px; }
+.ll-num { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gc); color: #fff; font-size: 15px; }
+.g1 { --gc: #2a8a87; --gbg: #e9f5f4; }
+.g2 { --gc: #d98436; --gbg: #fbf0e3; }
+.ll-group .ll-word.on { box-shadow: 0 0 0 4px var(--gc) inset, 0 4px 0 var(--line); background: #fff; }
+.ll-build .smallbtn { margin-left: auto; font-size: 17px; }

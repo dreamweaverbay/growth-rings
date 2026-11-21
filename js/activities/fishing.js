@@ -269,10 +269,16 @@ export function start(ctx) {
       draw();
       panel.append(el('p', { class: 'll-q' }, 'Pick a color. Real anglers use these names!'), grid, flakeBtn, next(2));
     } else if (stepNo === 2) {
-      const row = (key, words) => el('div', { class: 'll-words' }, words.map(w => el('button', { class: 'll-word' + (draft[key] === w ? ' on' : ''), onclick: () => { sfx.pick(); draft[key] = w; lureLab(2); } }, w)));
+      // Two labeled boxes, one per word, and a name line above that fills in as he picks.
+      const group = (key, n, label, words) => el('div', { class: 'll-group g' + n },
+        el('div', { class: 'll-group-head' }, el('span', { class: 'll-num' }, String(n)), label),
+        el('div', { class: 'll-words' }, words.map(w => el('button', { class: 'll-word' + (draft[key] === w ? ' on' : ''), onclick: () => { sfx.pick(); draft[key] = w; lureLab(2); } }, w))));
+      const slot = (key, n) => el('span', { class: 'll-slot g' + n + (draft[key] ? ' filled' : '') }, draft[key] || String(n));
       const dice = el('button', { class: 'smallbtn', onclick: () => { sfx.pick(); draft.first = NAME_WORDS.first[randInt(0, NAME_WORDS.first.length - 1)]; draft.second = NAME_WORDS.second[randInt(0, NAME_WORDS.second.length - 1)]; lureLab(2); } }, '🎲 Surprise me');
-      panel.append(el('p', { class: 'll-q' }, 'Name your bait. Pick one word from each row.'), row('first', NAME_WORDS.first), row('second', NAME_WORDS.second), el('div', { class: 'row gap' }, dice),
-        draft.first && draft.second ? next(3) : el('p', { class: 'muted' }, 'Pick a word from both rows to keep going.'));
+      panel.append(el('p', { class: 'll-q' }, 'Name your bait. Pick a first word and a second word.'),
+        el('div', { class: 'll-build' }, el('span', {}, 'The'), slot('first', 1), slot('second', 2), dice),
+        group('first', 1, 'First word', NAME_WORDS.first), group('second', 2, 'Second word', NAME_WORDS.second),
+        draft.first && draft.second ? next(3) : el('p', { class: 'muted' }, 'Pick one word from each box to keep going.'));
     } else {
       panel.append(el('p', { class: 'll-q' }, 'Time to test it at the Big Lake. How does the water look today?'),
         el('div', { class: 'll-clarity' }, CLARITY.map(c => el('button', { class: 'll-clear', onclick: () => { sfx.pick(); cast(c); } },
