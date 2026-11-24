@@ -1,5 +1,5 @@
 // Offline support: keep the app's own files on the tablet. The weather forecast always uses the network.
-const VERSION = 'gr-v6';
+const VERSION = 'gr-v7';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/store.js', 'js/sound.js', 'js/ui.js', 'js/art.js', 'js/fishart.js', 'js/factart.js',

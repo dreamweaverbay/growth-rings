@@ -2,7 +2,7 @@
 //
 // What this teaches, and where it sits in school science:
 //   Kindergarten: plants need water and light to live and grow.
-//   Here: a plant makes its own food in its leaves. Water and air are the ingredients,
+//   Here: a plant makes its own food in its leaves. It makes it out of water and air,
 //         sunlight is the power, sugar is the food, and oxygen comes out.
 //   Later (about fifth grade): the stuff a plant is built from comes mostly from air and
 //         water, not from soil.
@@ -101,22 +101,27 @@ export function harvestShort(kind, value, jars) {
   return `${RING[jars - 1]} ring`;
 }
 
-/* ---------- Leaf Kitchen ---------- */
+/* ---------- Leaf Life ---------- */
 
 export const GUESSES = [
-  { id: 'sun', name: 'Sunlight', pic: 'sun', after: 'Yes! Sunlight is the power.', right: true },
-  { id: 'water', name: 'Water', pic: 'water', after: 'Yes! Water is an ingredient.', right: true },
-  { id: 'air', name: 'Air', pic: 'air', after: 'Yes! Air is an ingredient.', right: true },
+  { id: 'sun', name: 'Sunlight', pic: 'sun', after: 'Yes! Sunlight gives the leaf power.', right: true },
+  { id: 'water', name: 'Water', pic: 'water', after: 'Yes! The leaf makes food out of water.', right: true },
+  { id: 'air', name: 'Air', pic: 'air', after: 'Yes! The leaf makes food out of air.', right: true },
   { id: 'soil', name: 'Soil', pic: 'soil', after: 'Soil helps. It holds water and minerals. But it is not the food.' },
   { id: 'rocks', name: 'Rocks', pic: 'rocks', after: 'Rocks do not help a leaf make food.' },
   { id: 'pizza', name: 'Pizza', pic: 'pizza', after: 'Pizza is your food. A plant makes its own!' },
 ];
 
-export const DISCOVERIES = [
-  { id: 'cook', todo: 'Make food', found: 'The leaf made sugar. Sugar is the plant’s food.' },
-  { id: 'nosun', todo: 'Turn off the sun', found: 'No sunlight, no power. The leaf stops.' },
-  { id: 'nopart', todo: 'Take away water or air', found: 'Water and air are the ingredients. The leaf needs both.' },
-  { id: 'nosoil', todo: 'Take away the soil', found: 'No soil, and it still makes food! Soil holds the water and holds the plant up.' },
+// One thing is taken away on each card. tags label what changed in the picture.
+export const WHATIFS = [
+  { id: 'nosun', q: 'What if there is no sunlight?', st: { sun: false, water: true, air: true, soil: true }, tags: [], makes: false,
+    result: 'It stops. Without sunlight, the leaf has no power to make food.' },
+  { id: 'nowater', q: 'What if the soil dries up and there is no water?', st: { sun: true, water: false, air: true, soil: true }, tags: [[140, 246, 'no water']], makes: false,
+    result: 'It stops. The leaf makes food out of water and air. With no water, it can\u2019t.' },
+  { id: 'noair', q: 'What if we cover the plant so no air can get in?', st: { sun: true, water: true, air: false, soil: true, dome: true }, tags: [[352, 60, 'no air']], makes: false,
+    result: 'It stops. The leaf makes food out of water and air. With no air, it can\u2019t.' },
+  { id: 'nosoil', q: 'What if there is no soil? The roots sit in a jar of water.', st: { sun: true, water: true, air: true, soil: false }, tags: [[330, 250, 'no soil']], makes: true,
+    result: 'It still makes food! Soil holds water and holds the plant up. But the food is made in the leaf.' },
 ];
 
 export const BIG_WORDS = [
