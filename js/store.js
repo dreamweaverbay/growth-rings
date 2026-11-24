@@ -20,6 +20,7 @@ const DEFAULTS = () => ({
   build: { done: {} },
   fishing: { stocked: {}, box: [] },
   facts: { learned: {}, rounds: 0 },
+  leaf: { kitchen: 0, garden: [] },
 });
 
 let state = load();

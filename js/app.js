@@ -28,6 +28,14 @@ export const ACTIVITIES = [
     status: s => { const t = store.todayKey(); const n = [t, t + ':next', t + ':piece', t + ':path'].filter(k => s.grove.solved[k]).length; return n === 4 ? 'All 4 solved today \u2713' : n ? `${n} of 4 solved today` : '4 new puzzles today'; },
   },
   {
+    id: 'leaf', name: 'Leaf Lab', color: '#c2901a',
+    load: () => import('./activities/leaf.js'),
+    status: s => {
+      const n = s.leaf.garden.length;
+      return n ? `${n} plant${n === 1 ? '' : 's'} in your garden` : 'How plants make food';
+    },
+  },
+  {
     id: 'fishing', name: 'Fishing Hole', color: '#2a8a87',
     load: () => import('./activities/fishing.js'),
     status: s => {
